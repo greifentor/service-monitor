@@ -1,0 +1,29 @@
+@startuml
+
+component service {
+
+	component CheckService
+	
+	component MonitorService
+	
+	component XMLToMapConverter
+	
+	MonitorService --> CheckService
+
+}
+
+component console {
+
+	component ConsoleRunner
+	
+	component ConfigurationReader
+	
+	component ConsolePrinter
+	
+	ConsoleRunner --> ConfigurationReader
+	ConsoleRunner --> ConsolePrinter
+	ConsoleRunner -UP-> MonitorService
+
+}
+
+@enduml

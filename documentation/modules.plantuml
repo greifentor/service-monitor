@@ -1,0 +1,9 @@
+@startuml
+
+[console]
+
+[service]
+
+[console] --> [service]
+
+@enduml
