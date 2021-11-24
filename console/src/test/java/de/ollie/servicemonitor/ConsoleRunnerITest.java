@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ConsoleRunnerITest {
 
 	@Inject
-	private ConsoleRunner unitUnderTest;
+	private ConsoleRunnerApplication unitUnderTest;
 
 	@Test
 	void happyRun() {

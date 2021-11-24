@@ -1,23 +1,47 @@
 package de.ollie.servicemonitor;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import java.util.List;
+
+import javax.inject.Named;
+
+import org.springframework.boot.ApplicationArguments;
+
+import de.ollie.servicemonitor.configuration.MonitoringConfiguration;
+import de.ollie.servicemonitor.model.CheckRequest;
+import de.ollie.servicemonitor.model.MonitorResult;
 
 /**
- * @author ollie (23.11.2021)
+ * @author ollie (24.11.2021)
  */
-@SpringBootApplication
-@ComponentScan("de.ollie")
+@Named
 public class ConsoleRunner {
-    
-    public static void main(String[] args) {
-        SpringApplication.run(ConsoleRunner.class, args);
-        System.out.println("Hello World!");
-        // 1. Read configuration from file defined by a args parameter.
-        // 2. Convert configuration to a list of CheckRequest.
-        // 3. Call the MonitorServce.monitor method.
-        // 4. Print the result to the console.
-    }
+
+	public void run(ApplicationArguments args) {
+		CallParameters callParameters = readCallParametersFromArgs(args);
+		MonitoringConfiguration monitoringConfiguration = readMonitoringConfigurationFromYAMLFile(callParameters);
+		List<CheckRequest> checkRequests = convertMonitoringConfigurationToCheckRequestList(monitoringConfiguration);
+		MonitorResult monitorResult = callMonitorServiceForCheckRequests(checkRequests);
+		printMonitorResultToConsole(monitorResult);
+	}
+
+	private CallParameters readCallParametersFromArgs(ApplicationArguments args) {
+		return null;
+	}
+
+	private MonitoringConfiguration readMonitoringConfigurationFromYAMLFile(CallParameters callParameters) {
+		return null;
+	}
+
+	private List<CheckRequest> convertMonitoringConfigurationToCheckRequestList(
+			MonitoringConfiguration monitoringConfiguration) {
+		return null;
+	}
+
+	private MonitorResult callMonitorServiceForCheckRequests(List<CheckRequest> checkRequests) {
+		return null;
+	}
+
+	private void printMonitorResultToConsole(MonitorResult monitorResult) {
+	}
 
 }

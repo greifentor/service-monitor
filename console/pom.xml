@@ -16,6 +16,14 @@
 
 	<name>service-monitor-console</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>de.ollie</groupId>
+			<artifactId>service-monitor-service</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<resources>
 			<resource>
