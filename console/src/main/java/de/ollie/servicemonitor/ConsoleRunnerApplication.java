@@ -8,6 +8,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+import de.ollie.servicemonitor.configuration.reader.YAMLConfigurationFileReader;
+import de.ollie.servicemonitor.parameter.ApplicationArgumentsToCallParametersConverter;
+
 /**
  * @author ollie (23.11.2021)
  */
@@ -16,7 +19,9 @@ import org.springframework.context.annotation.ComponentScan;
 public class ConsoleRunnerApplication implements ApplicationRunner {
 
 	@Inject
-	private ConsoleRunner consoleRunner;
+	private ApplicationArgumentsToCallParametersConverter applicationArgumentsToCallParametersConverter;
+	@Inject
+	private YAMLConfigurationFileReader yamlConfigurationFileReader;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ConsoleRunnerApplication.class, args);
@@ -24,7 +29,7 @@ public class ConsoleRunnerApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		consoleRunner.run(args);
+		new ConsoleRunner(applicationArgumentsToCallParametersConverter, yamlConfigurationFileReader).run(args);
 	}
 
 }
