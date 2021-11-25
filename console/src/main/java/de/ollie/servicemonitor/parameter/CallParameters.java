@@ -1,4 +1,6 @@
-package de.ollie.servicemonitor;
+package de.ollie.servicemonitor.parameter;
+
+import java.util.List;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -10,6 +12,6 @@ import lombok.experimental.Accessors;
 @Data
 public class CallParameters {
 
-	private String configurationFileName;
+	private List<String> configurationFileNames;
 
 }

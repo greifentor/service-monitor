@@ -9,6 +9,7 @@ import org.springframework.boot.ApplicationArguments;
 import de.ollie.servicemonitor.configuration.MonitoringConfiguration;
 import de.ollie.servicemonitor.model.CheckRequest;
 import de.ollie.servicemonitor.model.MonitorResult;
+import de.ollie.servicemonitor.parameter.CallParameters;
 
 /**
  * @author ollie (24.11.2021)
