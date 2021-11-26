@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+import de.ollie.servicemonitor.configuration.MonitoringConfigurationToCheckRequestGroupConverter;
 import de.ollie.servicemonitor.configuration.reader.YAMLConfigurationFileReader;
 import de.ollie.servicemonitor.parameter.ApplicationArgumentsToCallParametersConverter;
 
@@ -21,6 +22,8 @@ public class ConsoleRunnerApplication implements ApplicationRunner {
 	@Inject
 	private ApplicationArgumentsToCallParametersConverter applicationArgumentsToCallParametersConverter;
 	@Inject
+	private MonitoringConfigurationToCheckRequestGroupConverter monitoringConfigurationToCheckRequestGroupConverter;
+	@Inject
 	private YAMLConfigurationFileReader yamlConfigurationFileReader;
 
 	public static void main(String[] args) {
@@ -29,7 +32,10 @@ public class ConsoleRunnerApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		new ConsoleRunner(applicationArgumentsToCallParametersConverter, yamlConfigurationFileReader).run(args);
+		new ConsoleRunner(
+				applicationArgumentsToCallParametersConverter, monitoringConfigurationToCheckRequestGroupConverter,
+				yamlConfigurationFileReader, System.out)
+				.run(args);
 	}
 
 }
