@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.xml.sax.SAXParseException;
 
 @ExtendWith(MockitoExtension.class)
-public class XMLStringToMapConverterTest {
+class XMLStringToMapConverterTest {
 
 	@InjectMocks
 	private XMLStringToMapConverter unitUnderTest;

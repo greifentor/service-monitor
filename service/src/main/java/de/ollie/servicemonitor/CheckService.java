@@ -2,6 +2,7 @@ package de.ollie.servicemonitor;
 
 import javax.inject.Named;
 
+import de.ollie.servicemonitor.evaluation.CheckExpressionEvaluator;
 import de.ollie.servicemonitor.model.CheckRequest;
 import de.ollie.servicemonitor.model.CheckResult;
 import de.ollie.servicemonitor.model.CheckResult.Status;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 public class CheckService {
 	
 	private final WebClient webClient;
+
+	private final CheckExpressionEvaluator checkExpressionEvaluator;
 
 	/**
 	 * Checks all passed check request and returns a check result.

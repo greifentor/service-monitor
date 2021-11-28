@@ -1,6 +1,7 @@
 package de.ollie.servicemonitor.configuration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,10 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import de.ollie.servicemonitor.model.CheckRequest;
 import de.ollie.servicemonitor.model.CheckRequestGroup;
 
 @ExtendWith(MockitoExtension.class)
-public class MonitoringConfigurationToCheckRequestGroupConverterTest {
+class MonitoringConfigurationToCheckRequestGroupConverterTest {
 
 	private static final String CHECK_EXPRESSION_0 = "check expression 0";
 	private static final String CHECK_EXPRESSION_1 = "check expression 1";
@@ -89,7 +91,49 @@ public class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			List<CheckRequestGroup> returned = unitUnderTest.convert(monitoringConfiguration);
 			// Check
 			CheckRequestGroup group = returned.get(0);
-			assertTrue(group.getCheckRequests().isEmpty());
+			assertFalse(group.getCheckRequests().isEmpty());
+			CheckRequest checkRequest = group.getCheckRequests().get(0);
+			assertEquals(CHECK_EXPRESSION_0, checkRequest.getCheckExpression());
+			assertEquals(CHECK_NAME_0, checkRequest.getName());
+			assertEquals(URL_0, checkRequest.getUrl());
+		}
+
+		@Test
+		void passAMonitorConfigurationWithAFullyLoadedGroupConfigurationsWithTwoChecks_returnsAListWithACorrectCheckRequestGroup() {
+			// Prepare
+			MonitoringConfiguration monitoringConfiguration =
+					new MonitoringConfiguration()
+							.setGroups(
+									List
+											.of(
+													new GroupConfiguration()
+															.setChecks(
+																	List
+																			.of(
+																					new CheckConfiguration()
+																							.setCheckExpression(
+																									CHECK_EXPRESSION_0)
+																							.setName(CHECK_NAME_0)
+																							.setUrl(URL_0),
+																					new CheckConfiguration()
+																							.setCheckExpression(
+																									CHECK_EXPRESSION_1)
+																							.setName(CHECK_NAME_1)
+																							.setUrl(URL_1)))
+															.setName(GROUP_NAME_0)));
+			// Run
+			List<CheckRequestGroup> returned = unitUnderTest.convert(monitoringConfiguration);
+			// Check
+			CheckRequestGroup group = returned.get(0);
+			assertFalse(group.getCheckRequests().isEmpty());
+			CheckRequest checkRequest = group.getCheckRequests().get(0);
+			assertEquals(CHECK_EXPRESSION_0, checkRequest.getCheckExpression());
+			assertEquals(CHECK_NAME_0, checkRequest.getName());
+			assertEquals(URL_0, checkRequest.getUrl());
+			checkRequest = group.getCheckRequests().get(1);
+			assertEquals(CHECK_EXPRESSION_1, checkRequest.getCheckExpression());
+			assertEquals(CHECK_NAME_1, checkRequest.getName());
+			assertEquals(URL_1, checkRequest.getUrl());
 		}
 
 	}

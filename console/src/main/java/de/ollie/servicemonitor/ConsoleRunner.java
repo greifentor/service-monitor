@@ -45,7 +45,7 @@ public class ConsoleRunner {
 			printMonitorResultToConsole();
 			out.println("\n> run finished at: " + LocalDateTime.now());
 		} catch (Exception e) {
-			// TODO error message output.
+			e.printStackTrace();
 		}
 	}
 
