@@ -13,7 +13,8 @@ public class CheckResult {
 	public enum Status {
 		OK,
 		WARN,
-		FAIL;
+		FAIL,
+		ERROR;
 	}
 
 	private Status status;

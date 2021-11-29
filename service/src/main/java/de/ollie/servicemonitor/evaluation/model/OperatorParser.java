@@ -4,6 +4,6 @@ public interface OperatorParser {
 
 	String getOperatorToken();
 
-	OperatorExpression createOperatorExpression();
+	Operator createOperator();
 
 }

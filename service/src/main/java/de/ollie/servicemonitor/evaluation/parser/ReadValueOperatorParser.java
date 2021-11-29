@@ -5,19 +5,20 @@ import java.util.Stack;
 import javax.inject.Named;
 
 import de.ollie.servicemonitor.evaluation.model.ExecutableExpression;
-import de.ollie.servicemonitor.evaluation.model.OperatorExpression;
+import de.ollie.servicemonitor.evaluation.model.Operator;
 import de.ollie.servicemonitor.evaluation.model.OperatorParser;
 import lombok.EqualsAndHashCode;
 
 @Named
 public class ReadValueOperatorParser implements OperatorParser {
 
-	@EqualsAndHashCode(callSuper = true)
-	public static class ReadValueOperatorExpression extends OperatorExpression {
+	@EqualsAndHashCode
+	public static class ReadValueOperator implements Operator {
 
 		@Override
-		public void execute(Stack<ExecutableExpression> runtimeStack) {
-			// TODO OLI: Implementation.
+		public void exec(Stack<ExecutableExpression> runtimeStack) {
+			// TODO Auto-generated method stub
+			throw new UnsupportedOperationException("Implementierung fehlt");
 		}
 
 	}
@@ -28,8 +29,8 @@ public class ReadValueOperatorParser implements OperatorParser {
 	}
 
 	@Override
-	public OperatorExpression createOperatorExpression() {
-		return new ReadValueOperatorExpression();
+	public Operator createOperator() {
+		return new ReadValueOperator();
 	}
 
 }

@@ -10,8 +10,15 @@ import lombok.experimental.Accessors;
 @Data
 public class CheckRequest {
 
+	public enum ReturnedMediaType {
+		JSON,
+		STRING,
+		XML;
+	}
+
 	private String name;
 	private String url;
+	private ReturnedMediaType returnedMediaType;
 	private String checkExpression;
 
 }

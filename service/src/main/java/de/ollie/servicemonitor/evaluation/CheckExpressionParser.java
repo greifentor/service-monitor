@@ -2,16 +2,15 @@ package de.ollie.servicemonitor.evaluation;
 
 import static de.ollie.servicemonitor.util.Check.ensure;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 import javax.inject.Named;
 
-import de.ollie.servicemonitor.evaluation.model.ExecutableExpression;
+import de.ollie.servicemonitor.evaluation.model.Operator;
 import de.ollie.servicemonitor.evaluation.model.OperatorParser;
-import de.ollie.servicemonitor.evaluation.model.ValueExpression;
 import lombok.RequiredArgsConstructor;
 
 @Named
@@ -26,9 +25,9 @@ public class CheckExpressionParser {
 	 * @param checkExpression A string with a check expression to parse.
 	 * @return An executable List for the check expression evaluator.
 	 */
-	public List<ExecutableExpression> parse(String checkExpression) {
+	public Stack<Object> parse(String checkExpression) {
 		ensure(checkExpression != null, "check expression cannot be null.");
-		List<ExecutableExpression> expressions = new ArrayList<>();
+		Stack<Object> expressions = new Stack<>();
 		StringTokenizer st = new StringTokenizer(checkExpression, " ");
 		while (st.hasMoreTokens()) {
 			expressions.add(convertStringToExecutableExpression(st.nextToken()));
@@ -36,23 +35,19 @@ public class CheckExpressionParser {
 		return expressions;
 	}
 
-	private ExecutableExpression convertStringToExecutableExpression(String s) {
-		return getOperatorExpression(s).orElse(new ValueExpression().setValue(convertToValueExpression(s)));
+	private Object convertStringToExecutableExpression(String s) {
+		return getOperator(s).map(operator -> (Object) operator).orElse(convertToValue(s));
 	}
 
-	private Optional<ExecutableExpression> getOperatorExpression(String s) {
+	private Optional<Operator> getOperator(String s) {
 		return operatorParsers
 				.stream()
 				.filter(operatorParser -> operatorParser.getOperatorToken().equals(s))
 				.findFirst()
-				.map(OperatorParser::createOperatorExpression);
+				.map(OperatorParser::createOperator);
 	}
 
-	private Object convertToValueExpression(String s) {
-		try {
-			return Integer.parseInt(s);
-		} catch (Exception e) {
-		}
+	private Object convertToValue(String s) {
 		try {
 			return Long.parseLong(s);
 		} catch (Exception e) {
