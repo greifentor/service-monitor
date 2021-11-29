@@ -1,5 +1,7 @@
 package de.ollie.servicemonitor;
 
+import static de.ollie.servicemonitor.util.Check.ensure;
+
 import java.util.Map;
 
 import javax.inject.Named;
@@ -19,9 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CheckService {
 
-	private final WebClient webClient;
-
 	private final CheckExpressionEvaluator checkExpressionEvaluator;
+	private final WebClient webClient;
 	private final WebClientResultToMapConverter webClientResultToMapConverter;
 
 	/**
@@ -31,6 +32,7 @@ public class CheckService {
 	 * @return A check result for the passed request.
 	 */
 	public CheckResult performCheck(CheckRequest checkRequest) {
+		ensure(checkRequest != null, "check request cannot be null.");
 		try {
 			String callResult = webClient.call(checkRequest.getUrl());
 			Map<String, Object> valueMap = webClientResultToMapConverter.convert(callResult,
