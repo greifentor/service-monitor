@@ -1,9 +1,12 @@
-package de.ollie.servicemonitor.evaluation.model;
+package de.ollie.servicemonitor.evaluation.parser;
 
 import java.util.Stack;
 
 import javax.inject.Named;
 
+import de.ollie.servicemonitor.evaluation.model.ExecutableExpression;
+import de.ollie.servicemonitor.evaluation.model.OperatorExpression;
+import de.ollie.servicemonitor.evaluation.model.OperatorParser;
 import lombok.EqualsAndHashCode;
 
 @Named

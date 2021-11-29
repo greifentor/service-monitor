@@ -11,11 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import de.ollie.servicemonitor.evaluation.model.EqualsOperatorParser;
-import de.ollie.servicemonitor.evaluation.model.EqualsOperatorParser.EqualsOperatorExpression;
 import de.ollie.servicemonitor.evaluation.model.ExecutableExpression;
 import de.ollie.servicemonitor.evaluation.model.OperatorParser;
 import de.ollie.servicemonitor.evaluation.model.ValueExpression;
+import de.ollie.servicemonitor.evaluation.parser.EqualsOperatorParser;
+import de.ollie.servicemonitor.evaluation.parser.EqualsOperatorParser.EqualsOperatorExpression;
+import de.ollie.servicemonitor.evaluation.parser.ReadValueOperatorParser;
+import de.ollie.servicemonitor.evaluation.parser.ReadValueOperatorParser.ReadValueOperatorExpression;
 
 class CheckExpressionParserTest {
 
@@ -94,9 +96,23 @@ class CheckExpressionParserTest {
 				@Test
 				void passAStringWithAnEqualsOperator_returnsAListWithTheOperator() {
 					// Prepare
-					String operatorStr = "EQUALS";
+					OperatorParser operatorParser = new EqualsOperatorParser();
+					String operatorStr = operatorParser.getOperatorToken();
 					List<ExecutableExpression> expected = List.of(new EqualsOperatorExpression());
-					operatorParsers.add(new EqualsOperatorParser());
+					operatorParsers.add(operatorParser);
+					// Run
+					List<ExecutableExpression> returned = unitUnderTest.parse(operatorStr);
+					// Check
+					assertEquals(expected, returned);
+				}
+
+				@Test
+				void passAStringWithAnReadValueOperator_returnsAListWithTheOperator() {
+					// Prepare
+					OperatorParser operatorParser = new ReadValueOperatorParser();
+					String operatorStr = operatorParser.getOperatorToken();
+					List<ExecutableExpression> expected = List.of(new ReadValueOperatorExpression());
+					operatorParsers.add(operatorParser);
 					// Run
 					List<ExecutableExpression> returned = unitUnderTest.parse(operatorStr);
 					// Check
