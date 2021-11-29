@@ -79,7 +79,6 @@ class WebClientResultToMapConverterTest {
 			void passAStringAndReturnedMediaTypeString_returnsAMapWithOnlyFieldSTRINGAndThePassedValue() {
 				// Prepare
 				String value = "{ \"field0\": \"" + VALUE_0 + "\", \"field1\": " + VALUE_1 + " }";
-				Map<String, Object> expected = Map.of("field0", VALUE_0, "field1", VALUE_1);
 				// Run
 				Map<String, Object> returned = unitUnderTest.convert(value, ReturnedMediaType.JSON);
 				// Check
