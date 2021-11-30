@@ -2,13 +2,15 @@ package de.ollie.servicemonitor.evaluation;
 
 import static de.ollie.servicemonitor.util.Check.ensure;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 import javax.inject.Named;
 
-import de.ollie.servicemonitor.evaluation.model.Operator;
-import de.ollie.servicemonitor.evaluation.parser.EqualsOperatorParser.EqualsOperator;
+import de.ollie.servicemonitor.evaluation.model.ExecutableExpression;
+import de.ollie.servicemonitor.evaluation.model.OperatorExpression;
+import de.ollie.servicemonitor.evaluation.model.ValueExpression;
 import lombok.RequiredArgsConstructor;
 
 @Named
@@ -27,21 +29,21 @@ public class CheckExpressionEvaluator {
 	public Object evaluate(String checkExpression, Map<String, Object> valueMap) {
 		ensure(checkExpression != null, "check expression stack cannot be null.");
 		ensure(valueMap != null, "value map cannot be null.");
-		Stack<Object> runtimeStack = checkExpressionParser.parse(checkExpression);
-		return evaluateStack(runtimeStack, valueMap);
+		List<ExecutableExpression> executableExpressions = checkExpressionParser.parse(checkExpression);
+		Stack<Object> runtimeStack = new Stack<Object>();
+		return evaluateStack(executableExpressions, runtimeStack, valueMap);
 	}
 
-	private Object evaluateStack(Stack<Object> runtimeStack, Map<String, Object> valueMap) {
-		Object peek = runtimeStack.peek();
-		if (!(peek instanceof Operator)) {
-			return peek;
-		} else if (peek instanceof EqualsOperator) {
-			runtimeStack.pop();
-			Object obj0 = runtimeStack.pop();
-			Object obj1 = runtimeStack.pop();
-			return obj0.equals(obj1);
-		}
-		return null;
+	private Object evaluateStack(List<ExecutableExpression> executableExpressions, Stack<Object> runtimeStack,
+			Map<String, Object> valueMap) {
+		executableExpressions.forEach(executableExpression -> {
+			if (executableExpression instanceof ValueExpression) {
+				runtimeStack.push(((ValueExpression) executableExpression).getValue());
+			} else if (executableExpression instanceof OperatorExpression) {
+				((OperatorExpression) executableExpression).exec(runtimeStack, valueMap);
+			}
+		});
+		return runtimeStack.peek();
 	}
 
 }

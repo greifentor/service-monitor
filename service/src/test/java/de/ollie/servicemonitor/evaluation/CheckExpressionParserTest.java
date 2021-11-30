@@ -6,21 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import de.ollie.servicemonitor.evaluation.model.OperatorParser;
+import de.ollie.servicemonitor.evaluation.model.ExecutableExpression;
+import de.ollie.servicemonitor.evaluation.model.OperatorExpressionParser;
+import de.ollie.servicemonitor.evaluation.model.ValueExpression;
 import de.ollie.servicemonitor.evaluation.parser.EqualsOperatorParser;
-import de.ollie.servicemonitor.evaluation.parser.EqualsOperatorParser.EqualsOperator;
+import de.ollie.servicemonitor.evaluation.parser.EqualsOperatorParser.EqualsOperatorExpression;
 import de.ollie.servicemonitor.evaluation.parser.ReadValueOperatorParser;
-import de.ollie.servicemonitor.evaluation.parser.ReadValueOperatorParser.ReadValueOperator;
+import de.ollie.servicemonitor.evaluation.parser.ReadValueOperatorParser.ReadValueOperatorExpression;
 
 class CheckExpressionParserTest {
 
-	private List<OperatorParser> operatorParsers;
+	private List<OperatorExpressionParser> operatorParsers;
 
 	private CheckExpressionParser unitUnderTest;
 
@@ -58,10 +59,10 @@ class CheckExpressionParserTest {
 				void passAStringWithAnIntegerValue_returnsAStackWithTheValue() {
 					// Prepare
 					Integer value = 42;
-					Stack<Object> expected = new Stack<>();
-					expected.push(Long.valueOf(value));
+					List<ExecutableExpression> expected = new ArrayList<>();
+					expected.add(new ValueExpression().setValue(Long.valueOf(value)));
 					// Run
-					Stack<Object> returned = unitUnderTest.parse("" + value);
+					List<ExecutableExpression> returned = unitUnderTest.parse("" + value);
 					// Check
 					assertEquals(expected, returned);
 				}
@@ -70,10 +71,10 @@ class CheckExpressionParserTest {
 				void passAStringWithAnLongValue_returnsAStackWithTheValue() {
 					// Prepare
 					Long value = Long.valueOf(Long.MAX_VALUE);
-					Stack<Object> expected = new Stack<>();
-					expected.push(value);
+					List<ExecutableExpression> expected = new ArrayList<>();
+					expected.add(new ValueExpression().setValue(Long.valueOf(value)));
 					// Run
-					Stack<Object> returned = unitUnderTest.parse("" + value);
+					List<ExecutableExpression> returned = unitUnderTest.parse("" + value);
 					// Check
 					assertEquals(expected, returned);
 				}
@@ -82,10 +83,10 @@ class CheckExpressionParserTest {
 				void passAStringWithAnStringValue_returnsAStackWithTheValue() {
 					// Prepare
 					String value = "string";
-					Stack<Object> expected = new Stack<>();
-					expected.push(value);
+					List<ExecutableExpression> expected = new ArrayList<>();
+					expected.add(new ValueExpression().setValue(value));
 					// Run
-					Stack<Object> returned = unitUnderTest.parse(value);
+					List<ExecutableExpression> returned = unitUnderTest.parse(value);
 					// Check
 					assertEquals(expected, returned);
 				}
@@ -98,13 +99,13 @@ class CheckExpressionParserTest {
 				@Test
 				void passAStringWithAnEqualsOperator_returnsAStackWithTheOperator() {
 					// Prepare
-					OperatorParser operatorParser = new EqualsOperatorParser();
+					OperatorExpressionParser operatorParser = new EqualsOperatorParser();
 					String operatorStr = operatorParser.getOperatorToken();
-					Stack<Object> expected = new Stack<>();
-					expected.push(new EqualsOperator());
+					List<ExecutableExpression> expected = new ArrayList<>();
+					expected.add(new EqualsOperatorExpression());
 					operatorParsers.add(operatorParser);
 					// Run
-					Stack<Object> returned = unitUnderTest.parse(operatorStr);
+					List<ExecutableExpression> returned = unitUnderTest.parse(operatorStr);
 					// Check
 					assertEquals(expected, returned);
 				}
@@ -112,13 +113,13 @@ class CheckExpressionParserTest {
 				@Test
 				void passAStringWithAnReadValueOperator_returnsAStackWithTheOperator() {
 					// Prepare
-					OperatorParser operatorParser = new ReadValueOperatorParser();
+					OperatorExpressionParser operatorParser = new ReadValueOperatorParser();
 					String operatorStr = operatorParser.getOperatorToken();
-					Stack<Object> expected = new Stack<>();
-					expected.push(new ReadValueOperator());
+					List<ExecutableExpression> expected = new ArrayList<>();
+					expected.add(new ReadValueOperatorExpression());
 					operatorParsers.add(operatorParser);
 					// Run
-					Stack<Object> returned = unitUnderTest.parse(operatorStr);
+					List<ExecutableExpression> returned = unitUnderTest.parse(operatorStr);
 					// Check
 					assertEquals(expected, returned);
 				}
@@ -133,15 +134,15 @@ class CheckExpressionParserTest {
 					// Prepare
 					String value0 = "string";
 					Long value1 = 1L;
-					OperatorParser operatorParser = new EqualsOperatorParser();
+					OperatorExpressionParser operatorParser = new EqualsOperatorParser();
 					String expressionStr = value0 + " " + value1 + " " + operatorParser.getOperatorToken();
-					Stack<Object> expected = new Stack<>();
-					expected.push(value0);
-					expected.push(value1);
-					expected.push(new EqualsOperator());
+					List<ExecutableExpression> expected = new ArrayList<>();
+					expected.add(new ValueExpression().setValue(value0));
+					expected.add(new ValueExpression().setValue(value1));
+					expected.add(new EqualsOperatorExpression());
 					operatorParsers.add(operatorParser);
 					// Run
-					Stack<Object> returned = unitUnderTest.parse(expressionStr);
+					List<ExecutableExpression> returned = unitUnderTest.parse(expressionStr);
 					// Check
 					assertEquals(expected, returned);
 				}

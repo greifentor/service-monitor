@@ -34,8 +34,11 @@ public class CheckService {
 	public CheckResult performCheck(CheckRequest checkRequest) {
 		ensure(checkRequest != null, "check request cannot be null.");
 		try {
-			String callResult = webClient.call(checkRequest.getUrl());
-			Map<String, Object> valueMap = webClientResultToMapConverter.convert(callResult,
+			WebClient.Response response = webClient.call(checkRequest.getUrl());
+			if (!response.isOk()) {
+				return new CheckResult().setStatus(Status.FAIL);
+			}
+			Map<String, Object> valueMap = webClientResultToMapConverter.convert(response.getBody(),
 					checkRequest.getReturnedMediaType());
 			Object result = checkExpressionEvaluator.evaluate(checkRequest.getCheckExpression(), valueMap);
 			return new CheckResult()

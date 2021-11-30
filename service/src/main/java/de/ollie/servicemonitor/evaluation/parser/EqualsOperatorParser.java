@@ -1,23 +1,25 @@
 package de.ollie.servicemonitor.evaluation.parser;
 
+import java.util.Map;
 import java.util.Stack;
 
 import javax.inject.Named;
 
-import de.ollie.servicemonitor.evaluation.model.ExecutableExpression;
-import de.ollie.servicemonitor.evaluation.model.Operator;
-import de.ollie.servicemonitor.evaluation.model.OperatorParser;
+import de.ollie.servicemonitor.evaluation.model.OperatorExpression;
+import de.ollie.servicemonitor.evaluation.model.OperatorExpressionParser;
 import lombok.EqualsAndHashCode;
 
 @Named
-public class EqualsOperatorParser implements OperatorParser {
+public class EqualsOperatorParser implements OperatorExpressionParser {
 
 	@EqualsAndHashCode
-	public static class EqualsOperator implements Operator {
+	public static class EqualsOperatorExpression extends OperatorExpression {
 
 		@Override
-		public void exec(Stack<ExecutableExpression> runtimeStack) {
-			// TODO OLI: Implementation.
+		public void exec(Stack<Object> runtimeStack, Map<String, Object> valueMap) {
+			Object obj0 = runtimeStack.pop();
+			Object obj1 = runtimeStack.pop();
+			runtimeStack.push(obj0.equals(obj1));
 		}
 
 	}
@@ -28,8 +30,8 @@ public class EqualsOperatorParser implements OperatorParser {
 	}
 
 	@Override
-	public Operator createOperator() {
-		return new EqualsOperator();
+	public OperatorExpression createOperatorExpression() {
+		return new EqualsOperatorExpression();
 	}
 
 }

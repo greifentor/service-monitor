@@ -86,7 +86,7 @@ class CheckExpressionEvaluatorTest {
 		class ExpressionsWithOperators {
 
 			@Test
-			void passAnExpressionWithTwoUnequalValuesAndAnEqualsOperator_returnsFalse() {
+			void passAnExpressionWithTwoUnequalValuesAndAnEqualsOperator_returnsTrue() {
 				// Prepare
 				String value0 = "value0";
 				String value1 = "value1";
@@ -105,6 +105,31 @@ class CheckExpressionEvaluatorTest {
 				Object result = unitUnderTest.evaluate(value0 + " " + value1 + " EQUALS", valueMap);
 				// Check
 				assertTrue((Boolean) result);
+			}
+
+			@Test
+			void passAnExpressionWithThreeEqualValuesAndThreeEqualsOperators_returnsTrue() {
+				// Prepare
+				String value0 = "value0";
+				// Run
+				Object result = unitUnderTest.evaluate(
+						value0 + " " + value0 + " EQUALS " + value0 + " " + value0 + " EQUALS EQUALS",
+						valueMap);
+				// Check
+				assertTrue((Boolean) result);
+			}
+
+			@Test
+			void passAnExpressionWithTwoDifferentAndTwoEqualValuesAndThreeEqualsOperators_returnsFalse() {
+				// Prepare
+				String value0 = "value0";
+				String value1 = "value1";
+				// Run
+				Object result = unitUnderTest.evaluate(
+						value0 + " " + value0 + " EQUALS " + value1 + " " + value0 + " EQUALS EQUALS",
+						valueMap);
+				// Check
+				assertFalse((Boolean) result);
 			}
 
 		}

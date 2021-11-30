@@ -1,24 +1,38 @@
 package de.ollie.servicemonitor.evaluation.parser;
 
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 import javax.inject.Named;
 
-import de.ollie.servicemonitor.evaluation.model.ExecutableExpression;
-import de.ollie.servicemonitor.evaluation.model.Operator;
-import de.ollie.servicemonitor.evaluation.model.OperatorParser;
+import de.ollie.servicemonitor.evaluation.model.OperatorExpression;
+import de.ollie.servicemonitor.evaluation.model.OperatorExpressionParser;
 import lombok.EqualsAndHashCode;
 
 @Named
-public class ReadValueOperatorParser implements OperatorParser {
+public class ReadValueOperatorParser implements OperatorExpressionParser {
 
 	@EqualsAndHashCode
-	public static class ReadValueOperator implements Operator {
+	public static class ReadValueOperatorExpression extends OperatorExpression {
 
 		@Override
-		public void exec(Stack<ExecutableExpression> runtimeStack) {
-			// TODO Auto-generated method stub
-			throw new UnsupportedOperationException("Implementierung fehlt");
+		public void exec(Stack<Object> runtimeStack, Map<String, Object> valueMap) {
+			String path = "" + runtimeStack.pop();
+			StringTokenizer pathElements = new StringTokenizer(path, ".");
+			Object o = null;
+			while (pathElements.hasMoreTokens()) {
+				String element = pathElements.nextToken();
+				o = valueMap.get(element);
+				if (o == null) {
+					throw new NoSuchElementException("no path found for: " + path + ", element: " + element);
+				}
+				if (o instanceof Map) {
+					valueMap = (Map) o;
+				}
+			}
+			runtimeStack.push(o);
 		}
 
 	}
@@ -29,8 +43,8 @@ public class ReadValueOperatorParser implements OperatorParser {
 	}
 
 	@Override
-	public Operator createOperator() {
-		return new ReadValueOperator();
+	public OperatorExpression createOperatorExpression() {
+		return new ReadValueOperatorExpression();
 	}
 
 }
