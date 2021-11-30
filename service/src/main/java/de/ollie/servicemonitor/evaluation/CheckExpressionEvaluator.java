@@ -42,6 +42,7 @@ public class CheckExpressionEvaluator {
 			} else if (executableExpression instanceof OperatorExpression) {
 				((OperatorExpression) executableExpression).exec(runtimeStack, valueMap);
 			}
+			System.out.println(runtimeStack);
 		});
 		return runtimeStack.peek();
 	}

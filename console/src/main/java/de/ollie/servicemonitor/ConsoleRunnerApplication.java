@@ -22,6 +22,8 @@ public class ConsoleRunnerApplication implements ApplicationRunner {
 	@Inject
 	private ApplicationArgumentsToCallParametersConverter applicationArgumentsToCallParametersConverter;
 	@Inject
+	private MonitorService monitorService;
+	@Inject
 	private MonitoringConfigurationToCheckRequestGroupConverter monitoringConfigurationToCheckRequestGroupConverter;
 	@Inject
 	private YAMLConfigurationFileReader yamlConfigurationFileReader;
@@ -33,7 +35,9 @@ public class ConsoleRunnerApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		new ConsoleRunner(
-				applicationArgumentsToCallParametersConverter, monitoringConfigurationToCheckRequestGroupConverter,
+				applicationArgumentsToCallParametersConverter,
+				monitorService,
+				monitoringConfigurationToCheckRequestGroupConverter,
 				yamlConfigurationFileReader, System.out)
 				.run(args);
 	}

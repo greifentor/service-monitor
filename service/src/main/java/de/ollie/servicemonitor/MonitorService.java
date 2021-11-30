@@ -23,6 +23,7 @@ public class MonitorService {
 		ensure(checkRequests != null, "list of check requests cannot be null.");
 		MonitorResult result = createMonitorResult();
 		checkRequests.forEach(checkRequest -> result.addCheckResults(checkService.performCheck(checkRequest)));
+		System.out.println(result);
 		return result;
 	}
 

@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.inject.Named;
 
+import de.ollie.servicemonitor.configuration.CheckConfiguration.ReturnType;
 import de.ollie.servicemonitor.model.CheckRequest;
+import de.ollie.servicemonitor.model.CheckRequest.ReturnedMediaType;
 import de.ollie.servicemonitor.model.CheckRequestGroup;
 
 /**
@@ -20,25 +22,45 @@ public class MonitoringConfigurationToCheckRequestGroupConverter {
 			return null;
 		}
 		List<CheckRequestGroup> result = new ArrayList<>();
-		monitoringConfiguration.getGroups()
+		monitoringConfiguration
+				.getGroups()
 				.forEach(groupConfiguration -> result.add(convertGroupConfiguration(groupConfiguration)));
 		return result;
 	}
 
 	private CheckRequestGroup convertGroupConfiguration(GroupConfiguration groupConfiguration) {
-		return new CheckRequestGroup().setCheckRequests(convertCheckConfigurationList(groupConfiguration.getChecks())).setName(groupConfiguration.getName());
+		return new CheckRequestGroup()
+				.setCheckRequests(convertCheckConfigurationList(groupConfiguration.getChecks()))
+				.setName(groupConfiguration.getName());
 	}
 
 	private List<CheckRequest> convertCheckConfigurationList(List<CheckConfiguration> checkConfigurations) {
-		return checkConfigurations.stream()
+		return checkConfigurations
+				.stream()
 				.map(checkConfiguration -> convertCheckConfiguration(checkConfiguration))
 				.collect(Collectors.toList());
 	}
 
 	private CheckRequest convertCheckConfiguration(CheckConfiguration checkConfiguration) {
-		return new CheckRequest().setCheckExpression(checkConfiguration.getCheckExpression())
+		return new CheckRequest()
+				.setCheckExpression(checkConfiguration.getCheckExpression())
 				.setName(checkConfiguration.getName())
+				.setReturnedMediaType(convertReturnTypeToReturnedMediaType(checkConfiguration.getReturnType()))
 				.setUrl(checkConfiguration.getUrl());
+	}
+
+	private ReturnedMediaType convertReturnTypeToReturnedMediaType(ReturnType returnType) {
+		if (returnType == null) {
+			return ReturnedMediaType.STRING;
+		}
+		switch (returnType) {
+		case JSON:
+			return ReturnedMediaType.JSON;
+		case XML:
+			return ReturnedMediaType.XML;
+		default:
+			return ReturnedMediaType.STRING;
+		}
 	}
 
 }

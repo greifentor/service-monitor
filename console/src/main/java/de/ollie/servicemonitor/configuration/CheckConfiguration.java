@@ -10,8 +10,15 @@ import lombok.experimental.Accessors;
 @Data
 public class CheckConfiguration {
 
+	public enum ReturnType {
+		JSON,
+		STRING,
+		XML;
+	}
+
 	private String name;
 	private String url;
+	private ReturnType returnType;
 	private String checkExpression;
 
 }

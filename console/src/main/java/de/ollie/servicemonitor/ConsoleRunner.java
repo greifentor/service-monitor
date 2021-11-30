@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class ConsoleRunner {
 
 	private final ApplicationArgumentsToCallParametersConverter applicationArgumentsToCallParametersConverter;
+	private final MonitorService monitorService;
 	private final MonitoringConfigurationToCheckRequestGroupConverter monitoringConfigurationToCheckRequestGroupConverter;
 	private final YAMLConfigurationFileReader yamlConfigurationFileReader;
 	private final PrintStream out;
@@ -63,10 +64,14 @@ public class ConsoleRunner {
 	}
 
 	private void callMonitorServiceForCheckRequests() {
-		monitorResult = null;
+		checkRequestGroups
+				.forEach(
+						checkRequestGroup -> monitorResult =
+								monitorService.monitor(checkRequestGroup.getCheckRequests()));
 	}
 
 	private void printMonitorResultToConsole() {
+		out.println(monitorResult);
 	}
 
 }

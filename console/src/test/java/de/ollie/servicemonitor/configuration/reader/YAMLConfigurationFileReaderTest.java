@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import de.ollie.servicemonitor.configuration.CheckConfiguration;
+import de.ollie.servicemonitor.configuration.CheckConfiguration.ReturnType;
 import de.ollie.servicemonitor.configuration.GroupConfiguration;
 import de.ollie.servicemonitor.configuration.MonitoringConfiguration;
 
@@ -30,6 +31,7 @@ class YAMLConfigurationFileReaderTest {
 	private static final String CHECK_EXPRESSION_0 = "checkExpression0";
 	private static final String CHECK_NAME_0 = "checkName0";
 	private static final String GROUP_NAME_0 = "groupName0";
+	private static final ReturnType RETURN_TYPE_0 = CheckConfiguration.ReturnType.STRING;
 	private static final String URL_0 = "url0";
 
 	private static final String CONTENT = "groups:\n" + //
@@ -37,6 +39,7 @@ class YAMLConfigurationFileReaderTest {
 			"  checks:\n" + //
 			"  - name: " + CHECK_NAME_0 + "\n" + //
 			"    url: " + URL_0 + "\n" + //
+			"    returnType: " + RETURN_TYPE_0.name() + "\n" + //
 			"    checkExpression: " + CHECK_EXPRESSION_0 + "\n";
 
 	@InjectMocks
@@ -85,6 +88,7 @@ class YAMLConfigurationFileReaderTest {
 				CheckConfiguration check = group.getChecks().get(0);
 				assertEquals(CHECK_EXPRESSION_0, check.getCheckExpression());
 				assertEquals(CHECK_NAME_0, check.getName());
+				assertEquals(RETURN_TYPE_0, check.getReturnType());
 				assertEquals(URL_0, check.getUrl());
 			}
 

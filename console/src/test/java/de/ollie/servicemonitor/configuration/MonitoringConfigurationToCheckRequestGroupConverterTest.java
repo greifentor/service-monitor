@@ -13,7 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import de.ollie.servicemonitor.configuration.CheckConfiguration.ReturnType;
 import de.ollie.servicemonitor.model.CheckRequest;
+import de.ollie.servicemonitor.model.CheckRequest.ReturnedMediaType;
 import de.ollie.servicemonitor.model.CheckRequestGroup;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +27,8 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 	private static final String CHECK_NAME_1 = "check name 1";
 	private static final String GROUP_NAME_0 = "group name 0";
 	private static final String GROUP_NAME_1 = "group name 1";
+	private static final ReturnType RETURN_TYPE_0 = ReturnType.STRING;
+	private static final ReturnType RETURN_TYPE_1 = ReturnType.JSON;
 	private static final String URL_0 = "url 0";
 	private static final String URL_1 = "url 1";
 
@@ -114,11 +118,15 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 																							.setCheckExpression(
 																									CHECK_EXPRESSION_0)
 																							.setName(CHECK_NAME_0)
+																							.setReturnType(
+																									RETURN_TYPE_0)
 																							.setUrl(URL_0),
 																					new CheckConfiguration()
 																							.setCheckExpression(
 																									CHECK_EXPRESSION_1)
 																							.setName(CHECK_NAME_1)
+																							.setReturnType(
+																									RETURN_TYPE_1)
 																							.setUrl(URL_1)))
 															.setName(GROUP_NAME_0)));
 			// Run
@@ -129,10 +137,12 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			CheckRequest checkRequest = group.getCheckRequests().get(0);
 			assertEquals(CHECK_EXPRESSION_0, checkRequest.getCheckExpression());
 			assertEquals(CHECK_NAME_0, checkRequest.getName());
+			assertEquals(ReturnedMediaType.STRING, checkRequest.getReturnedMediaType());
 			assertEquals(URL_0, checkRequest.getUrl());
 			checkRequest = group.getCheckRequests().get(1);
 			assertEquals(CHECK_EXPRESSION_1, checkRequest.getCheckExpression());
 			assertEquals(CHECK_NAME_1, checkRequest.getName());
+			assertEquals(ReturnedMediaType.JSON, checkRequest.getReturnedMediaType());
 			assertEquals(URL_1, checkRequest.getUrl());
 		}
 

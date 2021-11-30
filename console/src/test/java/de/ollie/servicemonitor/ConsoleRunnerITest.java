@@ -28,6 +28,7 @@ class ConsoleRunnerITest {
 						+ "  checks:\n" //
 						+ "  - name: Test Check\n" //
 						+ "    url: localhorst:9099\n" //
+						+ "    type: STRING\n" //
 						+ "    checkExpression: $status ok ==\n",
 				StandardOpenOption.CREATE,
 				StandardOpenOption.TRUNCATE_EXISTING);
