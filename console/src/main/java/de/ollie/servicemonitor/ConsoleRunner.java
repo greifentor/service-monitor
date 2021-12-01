@@ -71,7 +71,7 @@ public class ConsoleRunner {
 	}
 
 	private void printMonitorResultToConsole() {
-		out.println(monitorResult);
+		out.println("\n" + monitorResult);
 	}
 
 }
