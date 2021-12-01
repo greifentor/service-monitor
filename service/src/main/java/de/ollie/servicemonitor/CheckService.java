@@ -24,6 +24,7 @@ public class CheckService {
 	private final CheckExpressionEvaluator checkExpressionEvaluator;
 	private final WebClient webClient;
 	private final WebClientResultToMapConverter webClientResultToMapConverter;
+	private final MessageValueReplacer messageValueReplacer;
 
 	/**
 	 * Checks all passed check request and returns a check result.
@@ -42,6 +43,7 @@ public class CheckService {
 					checkRequest.getReturnedMediaType());
 			Object result = checkExpressionEvaluator.evaluate(checkRequest.getCheckExpression(), valueMap);
 			return new CheckResult()
+					.setMessage(messageValueReplacer.getMessageWithReplacesValues(checkRequest))
 					.setStatus((result instanceof Boolean) && (Boolean) result ? Status.OK : Status.FAIL);
 		} catch (Exception e) {
 			e.printStackTrace();

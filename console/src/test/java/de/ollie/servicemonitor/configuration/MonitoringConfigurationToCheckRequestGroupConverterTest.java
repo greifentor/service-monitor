@@ -30,6 +30,8 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 	private static final String GROUP_NAME_1 = "group name 1";
 	private static final String HOST_0 = "host0";
 	private static final String HOST_1 = "host1";
+	private static final String MESSAGE_0 = "message0";
+	private static final String MESSAGE_1 = "message1";
 	private static final String PATH_0 = "path0";
 	private static final String PATH_1 = "path1";
 	private static final Integer PORT_0 = 4711;
@@ -94,6 +96,7 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 					.setGroups(List.of(new GroupConfiguration()
 							.setChecks(List.of(new CheckConfiguration().setCheckExpression(CHECK_EXPRESSION_0)
 									.setName(CHECK_NAME_0)
+									.setMessage(MESSAGE_0)
 									.setHost(HOST_0)
 									.setPath(PATH_0)
 									.setPort(PORT_0)))
@@ -107,6 +110,7 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			assertEquals(CHECK_EXPRESSION_0, checkRequest.getCheckExpression());
 			assertEquals(CHECK_NAME_0, checkRequest.getName());
 			assertEquals(HOST_0, checkRequest.getHost());
+			assertEquals(MESSAGE_0, checkRequest.getMessage());
 			assertEquals(PATH_0, checkRequest.getPath());
 			assertEquals(PORT_0, checkRequest.getPort());
 		}
@@ -150,6 +154,7 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 																							.setCheckExpression(
 																									CHECK_EXPRESSION_0)
 																							.setName(CHECK_NAME_0)
+																							.setMessage(MESSAGE_0)
 																							.setReturnType(
 																									RETURN_TYPE_0)
 																							.setHost(HOST_0)
@@ -159,6 +164,7 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 																							.setCheckExpression(
 																									CHECK_EXPRESSION_1)
 																							.setName(CHECK_NAME_1)
+																							.setMessage(MESSAGE_1)
 																							.setReturnType(
 																									RETURN_TYPE_1)
 																							.setHost(HOST_1)
@@ -175,6 +181,7 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			assertEquals(CHECK_NAME_0, checkRequest.getName());
 			assertEquals(ReturnedMediaType.STRING, checkRequest.getReturnedMediaType());
 			assertEquals(HOST_0, checkRequest.getHost());
+			assertEquals(MESSAGE_0, checkRequest.getMessage());
 			assertEquals(PATH_0, checkRequest.getPath());
 			assertEquals(PORT_0, checkRequest.getPort());
 			checkRequest = group.getCheckRequests().get(1);
@@ -182,6 +189,7 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			assertEquals(CHECK_NAME_1, checkRequest.getName());
 			assertEquals(ReturnedMediaType.JSON, checkRequest.getReturnedMediaType());
 			assertEquals(HOST_1, checkRequest.getHost());
+			assertEquals(MESSAGE_1, checkRequest.getMessage());
 			assertEquals(PATH_1, checkRequest.getPath());
 			assertEquals(PORT_1, checkRequest.getPort());
 		}

@@ -2,6 +2,7 @@ groups:
 - name: TEST-GROUP
   checks:
   - name: Google
+    message: "Google Check on: ${url}"
     host: www.google.de
     returnType: STRING
     checkExpression: STRING READ_VALUE <title>Google</title> CONTAINS

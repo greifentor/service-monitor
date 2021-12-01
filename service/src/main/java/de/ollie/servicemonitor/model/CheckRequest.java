@@ -21,6 +21,7 @@ public class CheckRequest {
 	}
 
 	private String name;
+	private String message;
 	private String host;
 	private Integer port;
 	private String path;

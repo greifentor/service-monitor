@@ -19,6 +19,7 @@ public class CheckResult {
 		ERROR;
 	}
 
+	private String message;
 	private Status status;
 
 }

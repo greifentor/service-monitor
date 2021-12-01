@@ -47,6 +47,7 @@ public class MonitoringConfigurationToCheckRequestGroupConverter {
 		return new CheckRequest()
 				.setCheckExpression(checkConfiguration.getCheckExpression())
 				.setHost(checkConfiguration.getHost())
+				.setMessage(checkConfiguration.getMessage())
 				.setName(checkConfiguration.getName())
 				.setPath(checkConfiguration.getPath())
 				.setPort(checkConfiguration.getPort())
