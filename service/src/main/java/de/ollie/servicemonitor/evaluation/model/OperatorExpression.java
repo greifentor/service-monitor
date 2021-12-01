@@ -4,8 +4,10 @@ import java.util.Map;
 import java.util.Stack;
 
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 
 @EqualsAndHashCode
+@Generated
 public abstract class OperatorExpression implements ExecutableExpression {
 
 	@Override

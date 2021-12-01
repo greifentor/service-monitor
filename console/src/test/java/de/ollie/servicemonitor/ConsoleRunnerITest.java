@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = ConsoleRunnerApplication.class)
 class ConsoleRunnerITest {
 
 	private static final String CONFIGURATION_FILE_NAME = "test-configuration.yml";

@@ -9,12 +9,10 @@ import javax.inject.Named;
 
 import de.ollie.servicemonitor.evaluation.model.OperatorExpression;
 import de.ollie.servicemonitor.evaluation.model.OperatorExpressionParser;
-import lombok.EqualsAndHashCode;
 
 @Named
 public class ReadValueOperatorParser implements OperatorExpressionParser {
 
-	@EqualsAndHashCode
 	public static class ReadValueOperatorExpression extends OperatorExpression {
 
 		@Override

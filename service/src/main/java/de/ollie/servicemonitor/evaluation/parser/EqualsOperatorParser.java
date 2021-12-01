@@ -7,12 +7,10 @@ import javax.inject.Named;
 
 import de.ollie.servicemonitor.evaluation.model.OperatorExpression;
 import de.ollie.servicemonitor.evaluation.model.OperatorExpressionParser;
-import lombok.EqualsAndHashCode;
 
 @Named
 public class EqualsOperatorParser implements OperatorExpressionParser {
 
-	@EqualsAndHashCode
 	public static class EqualsOperatorExpression extends OperatorExpression {
 
 		@Override

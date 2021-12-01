@@ -5,12 +5,16 @@ import javax.inject.Named;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.Generated;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.Value;
 
 /**
  * @author ollie (26.11.2021)
  */
 @Named
+@RequiredArgsConstructor
 public class WebClient {
 
 	public enum Status {
@@ -21,6 +25,8 @@ public class WebClient {
 	}
 
 	@Value
+	@ToString
+	@Generated
 	public static class Response {
 
 		private String body;
@@ -29,7 +35,10 @@ public class WebClient {
 		public boolean isOk() {
 			return status == Status.OK;
 		}
+
 	}
+
+	private final RestTemplateFactory restTemplateFactory;
 
 	/**
 	 * Calls the passed URL and returns the result as a string.
@@ -38,7 +47,7 @@ public class WebClient {
 	 * @return The result of the call in a string.
 	 */
 	public Response call(String url) {
-		RestTemplate restTemplate = new RestTemplate();
+		RestTemplate restTemplate = restTemplateFactory.create();
 		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 		return new Response(response.getBody(), getStatus(response));
 	}
