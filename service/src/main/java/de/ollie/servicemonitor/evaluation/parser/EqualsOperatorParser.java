@@ -19,7 +19,7 @@ public class EqualsOperatorParser implements OperatorExpressionParser {
 		public void exec(Stack<Object> runtimeStack, Map<String, Object> valueMap) {
 			Object obj0 = runtimeStack.pop();
 			Object obj1 = runtimeStack.pop();
-			runtimeStack.push(obj0.equals(obj1));
+			runtimeStack.push(("" + obj0).equals("" + obj1));
 		}
 
 	}
