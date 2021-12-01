@@ -1,5 +1,7 @@
 package de.ollie.servicemonitor.configuration;
 
+import static de.ollie.servicemonitor.util.Check.ensure;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +12,6 @@ import de.ollie.servicemonitor.configuration.CheckConfiguration.ReturnType;
 import de.ollie.servicemonitor.model.CheckRequest;
 import de.ollie.servicemonitor.model.CheckRequest.ReturnedMediaType;
 import de.ollie.servicemonitor.model.CheckRequestGroup;
-
 /**
  * @author ollie (26.11.2021)
  */
@@ -42,11 +43,14 @@ public class MonitoringConfigurationToCheckRequestGroupConverter {
 	}
 
 	private CheckRequest convertCheckConfiguration(CheckConfiguration checkConfiguration) {
+		ensure(checkConfiguration.getHost() != null, new IllegalStateException("host cannot be null."));
 		return new CheckRequest()
 				.setCheckExpression(checkConfiguration.getCheckExpression())
+				.setHost(checkConfiguration.getHost())
 				.setName(checkConfiguration.getName())
-				.setReturnedMediaType(convertReturnTypeToReturnedMediaType(checkConfiguration.getReturnType()))
-				.setUrl(checkConfiguration.getUrl());
+				.setPath(checkConfiguration.getPath())
+				.setPort(checkConfiguration.getPort())
+				.setReturnedMediaType(convertReturnTypeToReturnedMediaType(checkConfiguration.getReturnType()));
 	}
 
 	private ReturnedMediaType convertReturnTypeToReturnedMediaType(ReturnType returnType) {

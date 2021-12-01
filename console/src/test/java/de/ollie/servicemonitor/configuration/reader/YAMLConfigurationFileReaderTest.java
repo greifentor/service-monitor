@@ -31,14 +31,18 @@ class YAMLConfigurationFileReaderTest {
 	private static final String CHECK_EXPRESSION_0 = "checkExpression0";
 	private static final String CHECK_NAME_0 = "checkName0";
 	private static final String GROUP_NAME_0 = "groupName0";
+	private static final String HOST_0 = "host0";
+	private static final String PATH_0 = "path0";
+	private static final Integer PORT_0 = 4711;
 	private static final ReturnType RETURN_TYPE_0 = CheckConfiguration.ReturnType.STRING;
-	private static final String URL_0 = "url0";
 
 	private static final String CONTENT = "groups:\n" + //
 			"- name: " + GROUP_NAME_0 + "\n" + //
 			"  checks:\n" + //
 			"  - name: " + CHECK_NAME_0 + "\n" + //
-			"    url: " + URL_0 + "\n" + //
+			"    host: " + HOST_0 + "\n" + //
+			"    port: " + PORT_0 + "\n" + //
+			"    path: " + PATH_0 + "\n" + //
 			"    returnType: " + RETURN_TYPE_0.name() + "\n" + //
 			"    checkExpression: " + CHECK_EXPRESSION_0 + "\n";
 
@@ -88,8 +92,10 @@ class YAMLConfigurationFileReaderTest {
 				CheckConfiguration check = group.getChecks().get(0);
 				assertEquals(CHECK_EXPRESSION_0, check.getCheckExpression());
 				assertEquals(CHECK_NAME_0, check.getName());
+				assertEquals(HOST_0, check.getHost());
+				assertEquals(PATH_0, check.getPath());
+				assertEquals(PORT_0, check.getPort());
 				assertEquals(RETURN_TYPE_0, check.getReturnType());
-				assertEquals(URL_0, check.getUrl());
 			}
 
 		}

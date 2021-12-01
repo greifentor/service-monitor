@@ -17,7 +17,9 @@ public class CheckConfiguration {
 	}
 
 	private String name;
-	private String url;
+	private String host;
+	private Integer port;
+	private String path;
 	private ReturnType returnType;
 	private String checkExpression;
 

@@ -2,6 +2,6 @@ groups:
 - name: TEST-GROUP
   checks:
   - name: Google
-    url: http://www.google.de
+    host: www.google.de
     returnType: STRING
     checkExpression: STRING READ_VALUE <title>Google</title> CONTAINS

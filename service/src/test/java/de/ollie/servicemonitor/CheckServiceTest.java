@@ -27,9 +27,10 @@ class CheckServiceTest {
 
 	private static final String CALL_RESULT = "call result";
 	private static final String CHECK_EXPRESSION = "check expression";
+	private static final String HOST = "host";
 	private static final WebClient.Response RESPONSE = new WebClient.Response(CALL_RESULT, WebClient.Status.OK);
 	private static final ReturnedMediaType RETURNED_MEDIA_TYPE = ReturnedMediaType.JSON;
-	private static final String URL = "url";
+	private static final String URL = CheckRequest.HTTP_PROTOCOL + HOST;
 	private static final Map<String, Object> VALUE_MAP = Map.of();
 
 	@Mock
@@ -72,7 +73,7 @@ class CheckServiceTest {
 										new CheckRequest()
 												.setCheckExpression(CHECK_EXPRESSION)
 												.setReturnedMediaType(RETURNED_MEDIA_TYPE)
-												.setUrl(URL));
+												.setHost(HOST));
 				// Check
 				assertEquals(expected, returned);
 			}
@@ -96,7 +97,7 @@ class CheckServiceTest {
 										new CheckRequest()
 												.setCheckExpression(CHECK_EXPRESSION)
 												.setReturnedMediaType(RETURNED_MEDIA_TYPE)
-												.setUrl(URL));
+												.setHost(HOST));
 				// Check
 				assertEquals(expected, returned);
 			}
@@ -110,7 +111,7 @@ class CheckServiceTest {
 				CheckResult returned = unitUnderTest
 						.performCheck(new CheckRequest().setCheckExpression(CHECK_EXPRESSION)
 								.setReturnedMediaType(RETURNED_MEDIA_TYPE)
-								.setUrl(URL));
+								.setHost(HOST));
 				// Check
 				assertEquals(expected, returned);
 				verifyNoInteractions(checkExpressionEvaluator);
@@ -134,7 +135,7 @@ class CheckServiceTest {
 										new CheckRequest()
 												.setCheckExpression(CHECK_EXPRESSION)
 												.setReturnedMediaType(RETURNED_MEDIA_TYPE)
-												.setUrl(URL));
+												.setHost(HOST));
 				// Check
 				assertEquals(expected, returned);
 			}

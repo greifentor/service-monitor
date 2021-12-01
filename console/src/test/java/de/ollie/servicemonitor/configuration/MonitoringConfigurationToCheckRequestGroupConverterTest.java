@@ -3,6 +3,7 @@ package de.ollie.servicemonitor.configuration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -27,10 +28,14 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 	private static final String CHECK_NAME_1 = "check name 1";
 	private static final String GROUP_NAME_0 = "group name 0";
 	private static final String GROUP_NAME_1 = "group name 1";
+	private static final String HOST_0 = "host0";
+	private static final String HOST_1 = "host1";
+	private static final String PATH_0 = "path0";
+	private static final String PATH_1 = "path1";
+	private static final Integer PORT_0 = 4711;
+	private static final Integer PORT_1 = 1701;
 	private static final ReturnType RETURN_TYPE_0 = ReturnType.STRING;
 	private static final ReturnType RETURN_TYPE_1 = ReturnType.JSON;
-	private static final String URL_0 = "url 0";
-	private static final String URL_1 = "url 1";
 
 	@InjectMocks
 	private MonitoringConfigurationToCheckRequestGroupConverter unitUnderTest;
@@ -89,7 +94,9 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 					.setGroups(List.of(new GroupConfiguration()
 							.setChecks(List.of(new CheckConfiguration().setCheckExpression(CHECK_EXPRESSION_0)
 									.setName(CHECK_NAME_0)
-									.setUrl(URL_0)))
+									.setHost(HOST_0)
+									.setPath(PATH_0)
+									.setPort(PORT_0)))
 							.setName(GROUP_NAME_0)));
 			// Run
 			List<CheckRequestGroup> returned = unitUnderTest.convert(monitoringConfiguration);
@@ -99,7 +106,32 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			CheckRequest checkRequest = group.getCheckRequests().get(0);
 			assertEquals(CHECK_EXPRESSION_0, checkRequest.getCheckExpression());
 			assertEquals(CHECK_NAME_0, checkRequest.getName());
-			assertEquals(URL_0, checkRequest.getUrl());
+			assertEquals(HOST_0, checkRequest.getHost());
+			assertEquals(PATH_0, checkRequest.getPath());
+			assertEquals(PORT_0, checkRequest.getPort());
+		}
+
+		@Test
+		void passAMonitorConfigurationWithACheckConfigurationsHavingANullValueAsHost_throwsAnException() {
+			// Prepare
+			MonitoringConfiguration monitoringConfiguration =
+					new MonitoringConfiguration()
+							.setGroups(
+									List
+											.of(
+													new GroupConfiguration()
+															.setChecks(
+																	List
+																			.of(
+																					new CheckConfiguration()
+																							.setCheckExpression(
+																									CHECK_EXPRESSION_0)
+																							.setName(CHECK_NAME_0)
+																							.setPath(PATH_0)
+																							.setPort(PORT_0)))
+															.setName(GROUP_NAME_0)));
+			// Run & Check
+			assertThrows(IllegalStateException.class, () -> unitUnderTest.convert(monitoringConfiguration));
 		}
 
 		@Test
@@ -120,14 +152,18 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 																							.setName(CHECK_NAME_0)
 																							.setReturnType(
 																									RETURN_TYPE_0)
-																							.setUrl(URL_0),
+																							.setHost(HOST_0)
+																							.setPath(PATH_0)
+																							.setPort(PORT_0),
 																					new CheckConfiguration()
 																							.setCheckExpression(
 																									CHECK_EXPRESSION_1)
 																							.setName(CHECK_NAME_1)
 																							.setReturnType(
 																									RETURN_TYPE_1)
-																							.setUrl(URL_1)))
+																							.setHost(HOST_1)
+																							.setPath(PATH_1)
+																							.setPort(PORT_1)))
 															.setName(GROUP_NAME_0)));
 			// Run
 			List<CheckRequestGroup> returned = unitUnderTest.convert(monitoringConfiguration);
@@ -138,12 +174,16 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			assertEquals(CHECK_EXPRESSION_0, checkRequest.getCheckExpression());
 			assertEquals(CHECK_NAME_0, checkRequest.getName());
 			assertEquals(ReturnedMediaType.STRING, checkRequest.getReturnedMediaType());
-			assertEquals(URL_0, checkRequest.getUrl());
+			assertEquals(HOST_0, checkRequest.getHost());
+			assertEquals(PATH_0, checkRequest.getPath());
+			assertEquals(PORT_0, checkRequest.getPort());
 			checkRequest = group.getCheckRequests().get(1);
 			assertEquals(CHECK_EXPRESSION_1, checkRequest.getCheckExpression());
 			assertEquals(CHECK_NAME_1, checkRequest.getName());
 			assertEquals(ReturnedMediaType.JSON, checkRequest.getReturnedMediaType());
-			assertEquals(URL_1, checkRequest.getUrl());
+			assertEquals(HOST_1, checkRequest.getHost());
+			assertEquals(PATH_1, checkRequest.getPath());
+			assertEquals(PORT_1, checkRequest.getPort());
 		}
 
 	}
