@@ -5,7 +5,7 @@ groups:
     output:
       columns:
       - name: name
-        width: 0
+        width: 255
         align: LEFT
         content: "${name} - URL: ${url}" 
     host: www.google.de
