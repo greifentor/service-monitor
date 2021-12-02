@@ -21,12 +21,12 @@ public class CheckRequest {
 	}
 
 	private String name;
-	private String message;
 	private String host;
 	private Integer port;
 	private String path;
 	private ReturnedMediaType returnedMediaType;
 	private String checkExpression;
+	private Output output;
 
 	public String getUrl() {
 		return HTTP_PROTOCOL + host + getPortStr() + getPathStr();

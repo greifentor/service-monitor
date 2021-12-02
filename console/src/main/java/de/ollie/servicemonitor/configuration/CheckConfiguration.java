@@ -16,8 +16,8 @@ public class CheckConfiguration {
 		XML;
 	}
 
+	private OutputConfiguration output;
 	private String name;
-	private String message;
 	private String host;
 	private Integer port;
 	private String path;

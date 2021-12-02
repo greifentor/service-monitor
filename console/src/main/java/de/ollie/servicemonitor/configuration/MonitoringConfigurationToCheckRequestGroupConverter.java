@@ -15,6 +15,9 @@ import de.ollie.servicemonitor.model.CheckRequestGroup;
 /**
  * @author ollie (26.11.2021)
  */
+import de.ollie.servicemonitor.model.Output;
+import de.ollie.servicemonitor.model.OutputColumn;
+import de.ollie.servicemonitor.model.OutputColumn.Alignment;
 @Named
 public class MonitoringConfigurationToCheckRequestGroupConverter {
 
@@ -47,8 +50,8 @@ public class MonitoringConfigurationToCheckRequestGroupConverter {
 		return new CheckRequest()
 				.setCheckExpression(checkConfiguration.getCheckExpression())
 				.setHost(checkConfiguration.getHost())
-				.setMessage(checkConfiguration.getMessage())
 				.setName(checkConfiguration.getName())
+				.setOutput(convertOutputConfigurationToOutput(checkConfiguration.getOutput()))
 				.setPath(checkConfiguration.getPath())
 				.setPort(checkConfiguration.getPort())
 				.setReturnedMediaType(convertReturnTypeToReturnedMediaType(checkConfiguration.getReturnType()));
@@ -66,6 +69,28 @@ public class MonitoringConfigurationToCheckRequestGroupConverter {
 		default:
 			return ReturnedMediaType.STRING;
 		}
+	}
+
+	private Output convertOutputConfigurationToOutput(OutputConfiguration output) {
+		if (output == null) {
+			return null;
+		}
+		return new Output().setColumns(convertOutputColumnConfigurationsToOutputColumns(output.getColumns()));
+	}
+
+	private List<OutputColumn> convertOutputColumnConfigurationsToOutputColumns(List<OutputColumnConfiguration> outputColumnConfigurations) {
+		return outputColumnConfigurations.stream()
+				.map(outputColumnConfiguration -> convertOutputColumnConfigurationToOutputColumn(
+						outputColumnConfiguration))
+				.collect(Collectors.toList());
+	}
+
+	private OutputColumn convertOutputColumnConfigurationToOutputColumn(
+			OutputColumnConfiguration outputColumnConfiguration) {
+		return new OutputColumn().setAlign(Alignment.valueOf(outputColumnConfiguration.getAlign().name()))
+				.setContent(outputColumnConfiguration.getContent())
+				.setName(outputColumnConfiguration.getName())
+				.setWidth(outputColumnConfiguration.getWidth());
 	}
 
 }

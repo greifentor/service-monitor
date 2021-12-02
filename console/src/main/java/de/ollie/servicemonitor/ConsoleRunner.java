@@ -13,8 +13,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import de.ollie.servicemonitor.configuration.MonitoringConfiguration;
 import de.ollie.servicemonitor.configuration.MonitoringConfigurationToCheckRequestGroupConverter;
 import de.ollie.servicemonitor.configuration.reader.YAMLConfigurationFileReader;
+import de.ollie.servicemonitor.model.CheckRequest;
 import de.ollie.servicemonitor.model.CheckRequestGroup;
+import de.ollie.servicemonitor.model.CheckResult;
 import de.ollie.servicemonitor.model.MonitorResult;
+import de.ollie.servicemonitor.model.OutputColumn;
+import de.ollie.servicemonitor.model.OutputColumn.Alignment;
 import de.ollie.servicemonitor.parameter.ApplicationArgumentsToCallParametersConverter;
 import de.ollie.servicemonitor.parameter.CallParameters;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class ConsoleRunner {
 
 	private final ApplicationArgumentsToCallParametersConverter applicationArgumentsToCallParametersConverter;
+	private final MessageValueReplacer messageValueReplacer;
 	private final MonitorService monitorService;
 	private final MonitoringConfigurationToCheckRequestGroupConverter monitoringConfigurationToCheckRequestGroupConverter;
 	private final YAMLConfigurationFileReader yamlConfigurationFileReader;
@@ -71,7 +76,29 @@ public class ConsoleRunner {
 	}
 
 	private void printMonitorResultToConsole() {
-		out.println("\n" + monitorResult);
+		out.println();
+		monitorResult.getCheckResults()
+				.forEach(checkResult -> out
+						.println(createMessageForCheckResult(checkResult)));
+	}
+
+	private String createMessageForCheckResult(CheckResult checkResult) {
+		CheckRequest checkRequest = checkResult.getCheckRequest();
+		return checkRequest
+				.getOutput()
+				.getColumns()
+				.stream()
+				.map(outputColumn -> convertOutputColumnToString(checkResult, outputColumn, checkRequest))
+				.reduce((s0, s1) -> s0 + " | " + s1)
+				.orElse("n/a");
+	}
+
+	private String convertOutputColumnToString(CheckResult checkResult, OutputColumn outputColumn,
+			CheckRequest checkRequest) {
+		String message = messageValueReplacer
+				.getMessageWithReplacesValues(outputColumn.getContent(), checkRequest, checkResult);
+		return String.format("%" + (outputColumn.getAlign() == Alignment.LEFT ? "-" : "")
+				+ (outputColumn.getWidth() > 0 ? outputColumn.getWidth() : "") + "s", message);
 	}
 
 }

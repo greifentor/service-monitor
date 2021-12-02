@@ -1,5 +1,7 @@
 package de.ollie.servicemonitor.model;
 
+import java.util.Map;
+
 import lombok.Data;
 import lombok.Generated;
 import lombok.experimental.Accessors;
@@ -19,7 +21,10 @@ public class CheckResult {
 		ERROR;
 	}
 
-	private String message;
+	private CheckRequest checkRequest;
+	private String errorMessage;
+	private String name;
 	private Status status;
+	private Map<String, Object> valueMap;
 
 }

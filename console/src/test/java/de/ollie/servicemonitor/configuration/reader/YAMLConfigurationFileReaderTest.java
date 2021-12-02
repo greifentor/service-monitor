@@ -1,6 +1,8 @@
 package de.ollie.servicemonitor.configuration.reader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
@@ -24,6 +26,7 @@ import de.ollie.servicemonitor.configuration.CheckConfiguration;
 import de.ollie.servicemonitor.configuration.CheckConfiguration.ReturnType;
 import de.ollie.servicemonitor.configuration.GroupConfiguration;
 import de.ollie.servicemonitor.configuration.MonitoringConfiguration;
+import de.ollie.servicemonitor.configuration.OutputColumnConfiguration.Alignment;
 
 @ExtendWith(MockitoExtension.class)
 class YAMLConfigurationFileReaderTest {
@@ -36,6 +39,11 @@ class YAMLConfigurationFileReaderTest {
 	private static final Integer PORT_0 = 4711;
 	private static final ReturnType RETURN_TYPE_0 = CheckConfiguration.ReturnType.STRING;
 
+	private static final Alignment COLUMN_ALIGNMENT = Alignment.LEFT;
+	private static final String COLUMN_CONTENT = "columnContent";
+	private static final String COLUMN_NAME = "columnName";
+	private static final Integer COLUMN_WIDTH = 42;
+
 	private static final String CONTENT = "groups:\n" + //
 			"- name: " + GROUP_NAME_0 + "\n" + //
 			"  checks:\n" + //
@@ -44,7 +52,13 @@ class YAMLConfigurationFileReaderTest {
 			"    port: " + PORT_0 + "\n" + //
 			"    path: " + PATH_0 + "\n" + //
 			"    returnType: " + RETURN_TYPE_0.name() + "\n" + //
-			"    checkExpression: " + CHECK_EXPRESSION_0 + "\n";
+			"    checkExpression: " + CHECK_EXPRESSION_0 + "\n" + //
+			"    output:\n" + //
+			"      columns:\n" + //
+			"      - name: " + COLUMN_NAME + "\n" + //
+			"        content: " + COLUMN_CONTENT + "\n" + //
+			"        align: " + COLUMN_ALIGNMENT.name() + "\n" + //
+			"        width: " + COLUMN_WIDTH + "\n";
 
 	@InjectMocks
 	private YAMLConfigurationFileReader unitUnderTest;
@@ -96,6 +110,12 @@ class YAMLConfigurationFileReaderTest {
 				assertEquals(PATH_0, check.getPath());
 				assertEquals(PORT_0, check.getPort());
 				assertEquals(RETURN_TYPE_0, check.getReturnType());
+				assertNotNull(check.getOutput());
+				assertFalse(check.getOutput().getColumns().isEmpty());
+				assertEquals(COLUMN_ALIGNMENT, check.getOutput().getColumns().get(0).getAlign());
+				assertEquals(COLUMN_CONTENT, check.getOutput().getColumns().get(0).getContent());
+				assertEquals(COLUMN_NAME, check.getOutput().getColumns().get(0).getName());
+				assertEquals(COLUMN_WIDTH, check.getOutput().getColumns().get(0).getWidth());
 			}
 
 		}

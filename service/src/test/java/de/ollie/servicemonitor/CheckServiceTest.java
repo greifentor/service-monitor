@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import de.ollie.servicemonitor.converter.xml.WebClientResultToMapConverter;
@@ -21,6 +20,7 @@ import de.ollie.servicemonitor.model.CheckRequest;
 import de.ollie.servicemonitor.model.CheckRequest.ReturnedMediaType;
 import de.ollie.servicemonitor.model.CheckResult;
 import de.ollie.servicemonitor.model.CheckResult.Status;
+import de.ollie.servicemonitor.model.Output;
 import de.ollie.servicemonitor.web.WebClient;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,7 +29,8 @@ class CheckServiceTest {
 	private static final String CALL_RESULT = "call result";
 	private static final String CHECK_EXPRESSION = "check expression";
 	private static final String HOST = "host";
-	private static final String MESSAGE = "message";
+	private static final String NAME = "name";
+	private static final Output OUTPUT = new Output();
 	private static final WebClient.Response RESPONSE = new WebClient.Response(CALL_RESULT, WebClient.Status.OK);
 	private static final ReturnedMediaType RETURNED_MEDIA_TYPE = ReturnedMediaType.JSON;
 	private static final String URL = CheckRequest.HTTP_PROTOCOL + HOST;
@@ -41,9 +42,6 @@ class CheckServiceTest {
 	private WebClient webClient;
 	@Mock
 	private WebClientResultToMapConverter webClientResultToMapConverter;
-
-	@Spy
-	private MessageValueReplacer messageValueReplacer;
 
 	@InjectMocks
 	private CheckService unitUnderTest;
@@ -67,19 +65,20 @@ class CheckServiceTest {
 			@Test
 			void passACheckRequestWhichResultsAnOKResult() {
 				// Prepare
-				CheckResult expected = new CheckResult().setMessage(MESSAGE).setStatus(Status.OK);
+				CheckRequest checkRequest = new CheckRequest().setCheckExpression(CHECK_EXPRESSION)
+						.setName(NAME)
+						.setOutput(OUTPUT)
+						.setReturnedMediaType(RETURNED_MEDIA_TYPE)
+						.setHost(HOST);
+				CheckResult expected = new CheckResult().setCheckRequest(checkRequest)
+						.setName(NAME)
+						.setStatus(Status.OK)
+						.setValueMap(VALUE_MAP);
 				when(webClient.call(URL)).thenReturn(RESPONSE);
 				when(webClientResultToMapConverter.convert(CALL_RESULT, RETURNED_MEDIA_TYPE)).thenReturn(VALUE_MAP);
 				when(checkExpressionEvaluator.evaluate(CHECK_EXPRESSION, VALUE_MAP)).thenReturn(Boolean.TRUE);
 				// Run
-				CheckResult returned =
-						unitUnderTest
-								.performCheck(
-										new CheckRequest()
-												.setCheckExpression(CHECK_EXPRESSION)
-												.setMessage(MESSAGE)
-												.setReturnedMediaType(RETURNED_MEDIA_TYPE)
-												.setHost(HOST));
+				CheckResult returned = unitUnderTest.performCheck(checkRequest);
 				// Check
 				assertEquals(expected, returned);
 			}
@@ -92,18 +91,17 @@ class CheckServiceTest {
 			@Test
 			void passACheckRequestWhichResultsAnFAILResult() {
 				// Prepare
-				CheckResult expected = new CheckResult().setStatus(Status.FAIL);
+				CheckRequest checkRequest = new CheckRequest().setCheckExpression(CHECK_EXPRESSION)
+						.setReturnedMediaType(RETURNED_MEDIA_TYPE)
+						.setHost(HOST);
+				CheckResult expected = new CheckResult().setCheckRequest(checkRequest)
+						.setStatus(Status.FAIL)
+						.setValueMap(VALUE_MAP);
 				when(webClient.call(URL)).thenReturn(RESPONSE);
 				when(webClientResultToMapConverter.convert(CALL_RESULT, RETURNED_MEDIA_TYPE)).thenReturn(VALUE_MAP);
 				when(checkExpressionEvaluator.evaluate(CHECK_EXPRESSION, VALUE_MAP)).thenReturn(Boolean.FALSE);
 				// Run
-				CheckResult returned =
-						unitUnderTest
-								.performCheck(
-										new CheckRequest()
-												.setCheckExpression(CHECK_EXPRESSION)
-												.setReturnedMediaType(RETURNED_MEDIA_TYPE)
-												.setHost(HOST));
+				CheckResult returned = unitUnderTest.performCheck(checkRequest);
 				// Check
 				assertEquals(expected, returned);
 			}
@@ -111,13 +109,13 @@ class CheckServiceTest {
 			@Test
 			void webClientReturnResponseWithHTTPStatusNotOk() {
 				// Prepare
-				CheckResult expected = new CheckResult().setStatus(Status.FAIL);
+				CheckRequest checkRequest = new CheckRequest().setCheckExpression(CHECK_EXPRESSION)
+						.setReturnedMediaType(RETURNED_MEDIA_TYPE)
+						.setHost(HOST);
+				CheckResult expected = new CheckResult().setCheckRequest(checkRequest).setStatus(Status.FAIL);
 				when(webClient.call(URL)).thenReturn(new WebClient.Response(null, WebClient.Status.BAD_REQUEST));
 				// Run
-				CheckResult returned = unitUnderTest
-						.performCheck(new CheckRequest().setCheckExpression(CHECK_EXPRESSION)
-								.setReturnedMediaType(RETURNED_MEDIA_TYPE)
-								.setHost(HOST));
+				CheckResult returned = unitUnderTest.performCheck(checkRequest);
 				// Check
 				assertEquals(expected, returned);
 				verifyNoInteractions(checkExpressionEvaluator);
@@ -132,16 +130,17 @@ class CheckServiceTest {
 			@Test
 			void webClientThrowsAnException() {
 				// Prepare
-				CheckResult expected = new CheckResult().setStatus(Status.ERROR);
-				when(webClient.call(URL)).thenThrow(new RuntimeException());
+				String message = "message";
+				CheckRequest checkRequest = new CheckRequest().setCheckExpression(CHECK_EXPRESSION)
+						.setReturnedMediaType(RETURNED_MEDIA_TYPE)
+						.setHost(HOST);
+				CheckResult expected = new CheckResult().setCheckRequest(checkRequest)
+						.setErrorMessage(message)
+						.setStatus(Status.ERROR);
+				when(webClient.call(URL)).thenThrow(new RuntimeException(message));
 				// Run
-				CheckResult returned =
-						unitUnderTest
-								.performCheck(
-										new CheckRequest()
-												.setCheckExpression(CHECK_EXPRESSION)
-												.setReturnedMediaType(RETURNED_MEDIA_TYPE)
-												.setHost(HOST));
+				CheckResult returned = unitUnderTest
+						.performCheck(checkRequest);
 				// Check
 				assertEquals(expected, returned);
 			}
