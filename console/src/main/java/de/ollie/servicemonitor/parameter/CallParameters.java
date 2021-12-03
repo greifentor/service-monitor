@@ -13,5 +13,6 @@ import lombok.experimental.Accessors;
 public class CallParameters {
 
 	private List<String> configurationFileNames;
+	private Long repeatInSeconds;
 
 }

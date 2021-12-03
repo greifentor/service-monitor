@@ -32,6 +32,19 @@ Example:
 
 `--file=console/src/main/resources/example-configuration.yml`
 
+Starts the application and runs the checks defined in the file `console/src/main/resources/example-configuration.yml`.
+
+#### repeatInSeconds
+
+(Optional) If the parameter is set with a long value in range 0 .. Long.MAX_VALUE, the console runner will repeat all 
+the checks any seconds passed with the parameter.
+
+Example:
+
+`--repeatInSeconds=42`
+
+Will start another run of the checks any 42 seconds.
+
 
 ### The Configuration File
 

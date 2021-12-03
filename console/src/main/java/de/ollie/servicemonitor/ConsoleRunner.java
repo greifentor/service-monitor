@@ -21,6 +21,7 @@ import de.ollie.servicemonitor.model.OutputColumn;
 import de.ollie.servicemonitor.model.OutputColumn.Alignment;
 import de.ollie.servicemonitor.parameter.ApplicationArgumentsToCallParametersConverter;
 import de.ollie.servicemonitor.parameter.CallParameters;
+import de.ollie.servicemonitor.parameter.ConsoleRunnerException;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -36,23 +37,30 @@ public class ConsoleRunner {
 	private final YAMLConfigurationFileReader yamlConfigurationFileReader;
 	private final PrintStream out;
 
+	private boolean firstRunDone = false;
 	private CallParameters callParameters;
 	private List<CheckRequestGroup> checkRequestGroups;
 	private MonitoringConfiguration monitoringConfiguration;
 	private MonitorResult monitorResult;
 
 	public void run(ApplicationArguments args) {
+		out.println("\n\n> application started at: " + LocalDateTime.now());
 		try {
-			out.println("\n\n> run started at: " + LocalDateTime.now());
 			readCallParametersFromArgs(args);
 			readMonitoringConfigurationFromYAMLFile();
 			convertMonitoringConfigurationToCheckRequestGroups();
-			callMonitorServiceForCheckRequests();
-			printMonitorResultToConsole();
-			out.println("\n> run finished at: " + LocalDateTime.now());
+			while (isCheckedForARun()) {
+				out.println("\n> run started at: " + LocalDateTime.now());
+				callMonitorServiceForCheckRequests();
+				printMonitorResultToConsole();
+				out.println("\n> run finished started at: " + LocalDateTime.now());
+			}
+		} catch (ConsoleRunnerException e) {
+			out.println("\nERROR> " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		out.println("\n> application finished at: " + LocalDateTime.now());
 	}
 
 	private void readCallParametersFromArgs(ApplicationArguments args) {
@@ -68,24 +76,33 @@ public class ConsoleRunner {
 		checkRequestGroups = monitoringConfigurationToCheckRequestGroupConverter.convert(monitoringConfiguration);
 	}
 
+	private boolean isCheckedForARun() {
+		boolean b = (callParameters.getRepeatInSeconds() != null) || !firstRunDone;
+		if (!firstRunDone) {
+			firstRunDone = true;
+		} else {
+			try {
+				Thread.sleep(callParameters.getRepeatInSeconds() * 1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return b;
+	}
+
 	private void callMonitorServiceForCheckRequests() {
-		checkRequestGroups
-				.forEach(
-						checkRequestGroup -> monitorResult =
-								monitorService.monitor(checkRequestGroup.getCheckRequests()));
+		checkRequestGroups.forEach(
+				checkRequestGroup -> monitorResult = monitorService.monitor(checkRequestGroup.getCheckRequests()));
 	}
 
 	private void printMonitorResultToConsole() {
 		out.println();
-		monitorResult.getCheckResults()
-				.forEach(checkResult -> out
-						.println(createMessageForCheckResult(checkResult)));
+		monitorResult.getCheckResults().forEach(checkResult -> out.println(createMessageForCheckResult(checkResult)));
 	}
 
 	private String createMessageForCheckResult(CheckResult checkResult) {
 		CheckRequest checkRequest = checkResult.getCheckRequest();
-		return checkRequest
-				.getOutput()
+		return checkRequest.getOutput()
 				.getColumns()
 				.stream()
 				.map(outputColumn -> convertOutputColumnToString(checkResult, outputColumn, checkRequest))
