@@ -20,6 +20,7 @@ public class OutputColumn {
 
 	private Alignment align;
 	private String content;
+	private String id;
 	private String name;
 	private Integer width;
 

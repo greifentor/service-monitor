@@ -2,6 +2,9 @@ package de.ollie.servicemonitor.web;
 
 import javax.inject.Named;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,12 +46,19 @@ public class WebClient {
 	/**
 	 * Calls the passed URL and returns the result as a string.
 	 * 
-	 * @param url The URL to call.
+	 * @param url                  The URL to call.
+	 * @param authenticationBearer An authentication bearer, if necessary.
 	 * @return The result of the call in a string.
 	 */
-	public Response call(String url) {
+	public Response call(String url, String authenticationBearer) {
 		RestTemplate restTemplate = restTemplateFactory.create();
-		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+		HttpEntity<String> httpEntity = null;
+		if (authenticationBearer != null) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setBearerAuth(authenticationBearer);
+			httpEntity = new HttpEntity<>(headers);
+		}
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
 		return new Response(response.getBody(), getStatus(response));
 	}
 

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,6 +25,7 @@ import de.ollie.servicemonitor.model.CheckRequestGroup;
 @ExtendWith(MockitoExtension.class)
 class MonitoringConfigurationToCheckRequestGroupConverterTest {
 
+	private static final String AUTHENTICATION_BEARER = "authentication bearer";
 	private static final String CHECK_EXPRESSION_0 = "check expression 0";
 	private static final String CHECK_EXPRESSION_1 = "check expression 1";
 	private static final String CHECK_NAME_0 = "check name 0";
@@ -32,6 +34,8 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 	private static final String GROUP_NAME_1 = "group name 1";
 	private static final String HOST_0 = "host0";
 	private static final String HOST_1 = "host1";
+	private static final String OUTPUT_ALT_CONTENT = "outputAltContent";
+	private static final String OUTPUT_ALT_ID = "outputAltId";
 	private static final String PATH_0 = "path0";
 	private static final String PATH_1 = "path1";
 	private static final Integer PORT_0 = 4711;
@@ -41,6 +45,7 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 
 	private static final Alignment COLUMN_ALIGNMENT = Alignment.LEFT;
 	private static final String COLUMN_CONTENT = "columnContent";
+	private static final String COLUMN_ID = "columnId";
 	private static final String COLUMN_NAME = "columnName";
 	private static final Integer COLUMN_WIDTH = 42;
 
@@ -104,29 +109,37 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 									.setHost(HOST_0)
 									.setPath(PATH_0)
 									.setPort(PORT_0)
-									.setOutput(new OutputConfiguration().setColumns(
-											List.of(new OutputColumnConfiguration().setAlign(COLUMN_ALIGNMENT)
-													.setContent(COLUMN_CONTENT)
-													.setName(COLUMN_NAME)
-													.setWidth(COLUMN_WIDTH))))))
-							.setName(GROUP_NAME_0)));
+									.setAuthenticationBearer(AUTHENTICATION_BEARER)
+									.setOutputAlternatives(List
+											.of(new OutputAlternativesConfiguration().setContent(OUTPUT_ALT_CONTENT)
+													.setId(OUTPUT_ALT_ID)))))
+							.setName(GROUP_NAME_0)
+							.setOutput(new OutputConfiguration()
+									.setColumns(List.of(new OutputColumnConfiguration().setAlign(COLUMN_ALIGNMENT)
+											.setContent(COLUMN_CONTENT)
+											.setId(COLUMN_ID)
+											.setName(COLUMN_NAME)
+											.setWidth(COLUMN_WIDTH))))));
 			// Run
 			List<CheckRequestGroup> returned = unitUnderTest.convert(monitoringConfiguration);
 			// Check
 			CheckRequestGroup group = returned.get(0);
 			assertFalse(group.getCheckRequests().isEmpty());
 			CheckRequest checkRequest = group.getCheckRequests().get(0);
+			assertEquals(AUTHENTICATION_BEARER, checkRequest.getAuthenticationBearer());
 			assertEquals(CHECK_EXPRESSION_0, checkRequest.getCheckExpression());
 			assertEquals(CHECK_NAME_0, checkRequest.getName());
+			assertSame(group, checkRequest.getGroup());
 			assertEquals(HOST_0, checkRequest.getHost());
 			assertEquals(PATH_0, checkRequest.getPath());
 			assertEquals(PORT_0, checkRequest.getPort());
-			assertNotNull(checkRequest.getOutput());
-			assertFalse(checkRequest.getOutput().getColumns().isEmpty());
-			assertEquals(COLUMN_ALIGNMENT.name(), checkRequest.getOutput().getColumns().get(0).getAlign().name());
-			assertEquals(COLUMN_CONTENT, checkRequest.getOutput().getColumns().get(0).getContent());
-			assertEquals(COLUMN_NAME, checkRequest.getOutput().getColumns().get(0).getName());
-			assertEquals(COLUMN_WIDTH, checkRequest.getOutput().getColumns().get(0).getWidth());
+			assertNotNull(group.getOutput());
+			assertFalse(group.getOutput().getColumns().isEmpty());
+			assertEquals(COLUMN_ALIGNMENT.name(), group.getOutput().getColumns().get(0).getAlign().name());
+			assertEquals(COLUMN_CONTENT, group.getOutput().getColumns().get(0).getContent());
+			assertEquals(COLUMN_ID, group.getOutput().getColumns().get(0).getId());
+			assertEquals(COLUMN_NAME, group.getOutput().getColumns().get(0).getName());
+			assertEquals(COLUMN_WIDTH, group.getOutput().getColumns().get(0).getWidth());
 		}
 
 		@Test

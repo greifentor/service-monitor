@@ -13,7 +13,8 @@ import lombok.experimental.Accessors;
 @Data
 public class GroupConfiguration {
 
-	private String name;
 	private List<CheckConfiguration> checks = new ArrayList<>();
+	private String name;
+	private OutputConfiguration output;
 
 }

@@ -21,6 +21,7 @@ public class CheckResult {
 		ERROR;
 	}
 
+	private CheckRequestGroup group;
 	private CheckRequest checkRequest;
 	private String errorMessage;
 	private String name;

@@ -60,34 +60,75 @@ A group has a name and could contain a list of checks.
 ```
 groups:
 - name: The name of the group
+  output:
+  - name
+    ... see below
   checks:
   - the check data (see below)
 ```
 
-#### Checks
-
-These data contain the configuration of a particular check.
-
-| Field           | Description                                        |
-| --------------- | -------------------------------------------------- |
-| checkExpression | The expression to check the return (see below).    |
-| host            | The name of the host which is to check.            |
-| name            | The name of the check.                             |
-| output          | The output configuration (see below).              |
-| path            | (optional) A path as extension for the host.       |
-| port            | (optional) The port number.                        |
-| returnType      | A type for the awaited return (JSON, STRING, XML). |
-
 ##### output
 
-The output contains a list of columns. The fields of the columns are:
+The output contains a list of columns for the checks. The fields of the columns are:
 
 | Field           | Description                                        |
 | --------------- | -------------------------------------------------- |
 | align           | An alignment for the column (CENTER, LEFT, RIGHT). |
 | content         | The content of the column (see below).             |
+| id              | The id of the column.                              |
 | name            | The name of the column.                            |
 | width           | The width of the column.                           |
+
+#### Checks
+
+These data contain the configuration of a particular check.
+
+| Field                | Description                                                  |
+| -------------------- | ------------------------------------------------------------ |
+| authenticationBearer | (optional) An authentication token (without "Bearer" key word) if necessary for URL access. |
+| checkExpression      | The expression to check the return (see below).              |
+| host                 | The name of the host which is to check.                      |
+| name                 | The name of the check.                                       |
+| outputAlternatives   | (optional) The output alternative configuration (see below). |
+| path                 | (optional) A path as extension for the host.                 |
+| port                 | (optional) The port number.                                  |
+| returnType           | A type for the awaited return (JSON, STRING, XML).           |
+
+##### outputAlternatives
+
+The output alternatives contains a configuration for an alternate output of this column for the related check. The 
+fields of the columns are:
+
+| Field           | Description                                        |
+| --------------- | -------------------------------------------------- |
+| content         | The content of the alternative column (see below). |
+| id              | The id of the column with alternative content.     |
+
+#### Column Contents
+
+Each column can contain a string with the pattern for the columns output. This string can contain place holders as
+described below:
+
+| Place Holder Id | Description                                        |
+| --------------- | -------------------------------------------------- |
+| name            | The name of the check request.                     |
+| status          | The status of the check result (OK, FAIL or ERROR. |
+| url             | The called url.                                    |
+
+This place holder are to access by having a `${PLACE_HOLDER_ID}` in the content string. Additionally it is possbile to 
+have field of the response of the call in this string. This can be addressed by `$F{PATH}`. This is working with XML 
+and JSON returns only. For example: `$F{status.value}` for returned JSON
+
+```
+{
+  "status": {
+    "value": "OK"
+  }
+}
+```
+
+would return "OK".
+
 
 #### Example File
 

@@ -11,6 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,6 +23,7 @@ import de.ollie.servicemonitor.web.WebClient.Status;
 @ExtendWith(MockitoExtension.class)
 public class WebClientTest {
 
+	private static final String AUTHENTICATION_BEARER = "authentication header";
 	private static final String RETURNED_STRING = "returned string";
 	private static final String URL = "url";
 
@@ -38,10 +42,10 @@ public class WebClientTest {
 		void webClientThrowsAnException_throwsAnException() {
 			// Prepare
 			RuntimeException exception = new RuntimeException();
-			when(restTemplate.getForEntity(URL, String.class)).thenThrow(exception);
+			when(restTemplate.exchange(URL, HttpMethod.GET, null, String.class)).thenThrow(exception);
 			when(restTemplateFactory.create()).thenReturn(restTemplate);
 			// Run
-			Throwable thrown = assertThrows(RuntimeException.class, () -> unitUnderTest.call(URL));
+			Throwable thrown = assertThrows(RuntimeException.class, () -> unitUnderTest.call(URL, null));
 			// Check
 			assertSame(exception, thrown);
 		}
@@ -50,10 +54,11 @@ public class WebClientTest {
 		void webClientReturnsAString_returnsResponseWithStatusOkAndAString() {
 			// Prepare
 			Response expected = new Response(RETURNED_STRING, Status.OK);
-			when(restTemplate.getForEntity(URL, String.class)).thenReturn(ResponseEntity.ok(RETURNED_STRING));
+			when(restTemplate.exchange(URL, HttpMethod.GET, null, String.class))
+					.thenReturn(ResponseEntity.ok(RETURNED_STRING));
 			when(restTemplateFactory.create()).thenReturn(restTemplate);
 			// Run
-			Response returned = unitUnderTest.call(URL);
+			Response returned = unitUnderTest.call(URL, null);
 			// Check
 			assertEquals(expected, returned);
 		}
@@ -62,10 +67,11 @@ public class WebClientTest {
 		void webClientReturnStatusBadRequest_returnsResponseWithStatusBadRequestAndANullString() {
 			// Prepare
 			Response expected = new Response(null, Status.BAD_REQUEST);
-			when(restTemplate.getForEntity(URL, String.class)).thenReturn(ResponseEntity.badRequest().build());
+			when(restTemplate.exchange(URL, HttpMethod.GET, null, String.class))
+					.thenReturn(ResponseEntity.badRequest().build());
 			when(restTemplateFactory.create()).thenReturn(restTemplate);
 			// Run
-			Response returned = unitUnderTest.call(URL);
+			Response returned = unitUnderTest.call(URL, null);
 			// Check
 			assertEquals(expected, returned);
 		}
@@ -74,10 +80,11 @@ public class WebClientTest {
 		void webClientReturnStatusNotFound_returnsResponseWithStatusNotFoundAndANullString() {
 			// Prepare
 			Response expected = new Response(null, Status.NOT_FOUND);
-			when(restTemplate.getForEntity(URL, String.class)).thenReturn(ResponseEntity.notFound().build());
+			when(restTemplate.exchange(URL, HttpMethod.GET, null, String.class))
+					.thenReturn(ResponseEntity.notFound().build());
 			when(restTemplateFactory.create()).thenReturn(restTemplate);
 			// Run
-			Response returned = unitUnderTest.call(URL);
+			Response returned = unitUnderTest.call(URL, null);
 			// Check
 			assertEquals(expected, returned);
 		}
@@ -86,10 +93,27 @@ public class WebClientTest {
 		void webClientReturnStatusOther_returnsResponseWithStatusInternalServerErrorAndANullString() {
 			// Prepare
 			Response expected = new Response(null, Status.OTHER);
-			when(restTemplate.getForEntity(URL, String.class)).thenReturn(ResponseEntity.internalServerError().build());
+			when(restTemplate.exchange(URL, HttpMethod.GET, null, String.class))
+					.thenReturn(ResponseEntity.internalServerError().build());
 			when(restTemplateFactory.create()).thenReturn(restTemplate);
 			// Run
-			Response returned = unitUnderTest.call(URL);
+			Response returned = unitUnderTest.call(URL, null);
+			// Check
+			assertEquals(expected, returned);
+		}
+
+		@Test
+		void webClientCallWithAuthenticationBearer_callsTheRestTemplateWithACorrectHeader() {
+			// Prepare
+			Response expected = new Response(RETURNED_STRING, Status.OK);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setBearerAuth(AUTHENTICATION_BEARER);
+			HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+			when(restTemplate.exchange(URL, HttpMethod.GET, httpEntity, String.class))
+					.thenReturn(ResponseEntity.ok(RETURNED_STRING));
+			when(restTemplateFactory.create()).thenReturn(restTemplate);
+			// Run
+			Response returned = unitUnderTest.call(URL, AUTHENTICATION_BEARER);
 			// Check
 			assertEquals(expected, returned);
 		}

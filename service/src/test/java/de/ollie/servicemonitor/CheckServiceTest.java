@@ -26,6 +26,7 @@ import de.ollie.servicemonitor.web.WebClient;
 @ExtendWith(MockitoExtension.class)
 class CheckServiceTest {
 
+	private static final String AUTHENTICATION_BEARER = "authentication bearer";
 	private static final String CALL_RESULT = "call result";
 	private static final String CHECK_EXPRESSION = "check expression";
 	private static final String HOST = "host";
@@ -67,14 +68,34 @@ class CheckServiceTest {
 				// Prepare
 				CheckRequest checkRequest = new CheckRequest().setCheckExpression(CHECK_EXPRESSION)
 						.setName(NAME)
-						.setOutput(OUTPUT)
 						.setReturnedMediaType(RETURNED_MEDIA_TYPE)
 						.setHost(HOST);
 				CheckResult expected = new CheckResult().setCheckRequest(checkRequest)
 						.setName(NAME)
 						.setStatus(Status.OK)
 						.setValueMap(VALUE_MAP);
-				when(webClient.call(URL)).thenReturn(RESPONSE);
+				when(webClient.call(URL, null)).thenReturn(RESPONSE);
+				when(webClientResultToMapConverter.convert(CALL_RESULT, RETURNED_MEDIA_TYPE)).thenReturn(VALUE_MAP);
+				when(checkExpressionEvaluator.evaluate(CHECK_EXPRESSION, VALUE_MAP)).thenReturn(Boolean.TRUE);
+				// Run
+				CheckResult returned = unitUnderTest.performCheck(checkRequest);
+				// Check
+				assertEquals(expected, returned);
+			}
+
+			@Test
+			void passACheckRequestWithAuthenticationBearerWhichResultsAnOKResult() {
+				// Prepare
+				CheckRequest checkRequest = new CheckRequest().setCheckExpression(CHECK_EXPRESSION)
+						.setName(NAME)
+						.setReturnedMediaType(RETURNED_MEDIA_TYPE)
+						.setHost(HOST)
+						.setAuthenticationBearer(AUTHENTICATION_BEARER);
+				CheckResult expected = new CheckResult().setCheckRequest(checkRequest)
+						.setName(NAME)
+						.setStatus(Status.OK)
+						.setValueMap(VALUE_MAP);
+				when(webClient.call(URL, AUTHENTICATION_BEARER)).thenReturn(RESPONSE);
 				when(webClientResultToMapConverter.convert(CALL_RESULT, RETURNED_MEDIA_TYPE)).thenReturn(VALUE_MAP);
 				when(checkExpressionEvaluator.evaluate(CHECK_EXPRESSION, VALUE_MAP)).thenReturn(Boolean.TRUE);
 				// Run
@@ -97,7 +118,7 @@ class CheckServiceTest {
 				CheckResult expected = new CheckResult().setCheckRequest(checkRequest)
 						.setStatus(Status.FAIL)
 						.setValueMap(VALUE_MAP);
-				when(webClient.call(URL)).thenReturn(RESPONSE);
+				when(webClient.call(URL, null)).thenReturn(RESPONSE);
 				when(webClientResultToMapConverter.convert(CALL_RESULT, RETURNED_MEDIA_TYPE)).thenReturn(VALUE_MAP);
 				when(checkExpressionEvaluator.evaluate(CHECK_EXPRESSION, VALUE_MAP)).thenReturn(Boolean.FALSE);
 				// Run
@@ -113,7 +134,7 @@ class CheckServiceTest {
 						.setReturnedMediaType(RETURNED_MEDIA_TYPE)
 						.setHost(HOST);
 				CheckResult expected = new CheckResult().setCheckRequest(checkRequest).setStatus(Status.FAIL);
-				when(webClient.call(URL)).thenReturn(new WebClient.Response(null, WebClient.Status.BAD_REQUEST));
+				when(webClient.call(URL, null)).thenReturn(new WebClient.Response(null, WebClient.Status.BAD_REQUEST));
 				// Run
 				CheckResult returned = unitUnderTest.performCheck(checkRequest);
 				// Check
@@ -137,7 +158,7 @@ class CheckServiceTest {
 				CheckResult expected = new CheckResult().setCheckRequest(checkRequest)
 						.setErrorMessage(message)
 						.setStatus(Status.ERROR);
-				when(webClient.call(URL)).thenThrow(new RuntimeException(message));
+				when(webClient.call(URL, null)).thenThrow(new RuntimeException(message));
 				// Run
 				CheckResult returned = unitUnderTest
 						.performCheck(checkRequest);

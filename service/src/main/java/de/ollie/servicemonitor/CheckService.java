@@ -33,21 +33,21 @@ public class CheckService {
 	 */
 	public CheckResult performCheck(CheckRequest checkRequest) {
 		ensure(checkRequest != null, "check request cannot be null.");
+		CheckResult checkResult = new CheckResult().setCheckRequest(checkRequest);
 		try {
-			WebClient.Response response = webClient.call(checkRequest.getUrl());
+			WebClient.Response response = webClient.call(checkRequest.getUrl(), checkRequest.getAuthenticationBearer());
 			if (!response.isOk()) {
-				return new CheckResult().setCheckRequest(checkRequest).setStatus(Status.FAIL);
+				return checkResult.setStatus(Status.FAIL);
 			}
 			Map<String, Object> valueMap = webClientResultToMapConverter.convert(response.getBody(),
 					checkRequest.getReturnedMediaType());
 			Object result = checkExpressionEvaluator.evaluate(checkRequest.getCheckExpression(), valueMap);
-			return new CheckResult()
-					.setCheckRequest(checkRequest)
+			return checkResult
 					.setName(checkRequest.getName())
 					.setStatus((result instanceof Boolean) && (Boolean) result ? Status.OK : Status.FAIL)
 					.setValueMap(valueMap);
 		} catch (Exception e) {
-			return new CheckResult().setCheckRequest(checkRequest)
+			return checkResult
 					.setErrorMessage(e.getMessage())
 					.setStatus(Status.ERROR);
 		}

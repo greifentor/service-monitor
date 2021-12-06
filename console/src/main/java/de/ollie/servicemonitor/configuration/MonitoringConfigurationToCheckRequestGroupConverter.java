@@ -16,6 +16,7 @@ import de.ollie.servicemonitor.model.CheckRequestGroup;
  * @author ollie (26.11.2021)
  */
 import de.ollie.servicemonitor.model.Output;
+import de.ollie.servicemonitor.model.OutputAlternative;
 import de.ollie.servicemonitor.model.OutputColumn;
 import de.ollie.servicemonitor.model.OutputColumn.Alignment;
 @Named
@@ -33,25 +34,29 @@ public class MonitoringConfigurationToCheckRequestGroupConverter {
 	}
 
 	private CheckRequestGroup convertGroupConfiguration(GroupConfiguration groupConfiguration) {
-		return new CheckRequestGroup()
-				.setCheckRequests(convertCheckConfigurationList(groupConfiguration.getChecks()))
-				.setName(groupConfiguration.getName());
+		CheckRequestGroup group = new CheckRequestGroup();
+		return group.setCheckRequests(convertCheckConfigurationList(group, groupConfiguration.getChecks()))
+				.setName(groupConfiguration.getName())
+				.setOutput(convertOutputConfigurationToOutput(groupConfiguration.getOutput()));
 	}
 
-	private List<CheckRequest> convertCheckConfigurationList(List<CheckConfiguration> checkConfigurations) {
+	private List<CheckRequest> convertCheckConfigurationList(CheckRequestGroup group,
+			List<CheckConfiguration> checkConfigurations) {
 		return checkConfigurations
 				.stream()
-				.map(checkConfiguration -> convertCheckConfiguration(checkConfiguration))
+				.map(checkConfiguration -> convertCheckConfiguration(group, checkConfiguration))
 				.collect(Collectors.toList());
 	}
 
-	private CheckRequest convertCheckConfiguration(CheckConfiguration checkConfiguration) {
+	private CheckRequest convertCheckConfiguration(CheckRequestGroup group, CheckConfiguration checkConfiguration) {
 		ensure(checkConfiguration.getHost() != null, new IllegalStateException("host cannot be null."));
 		return new CheckRequest()
+				.setAuthenticationBearer(checkConfiguration.getAuthenticationBearer())
 				.setCheckExpression(checkConfiguration.getCheckExpression())
+				.setGroup(group)
 				.setHost(checkConfiguration.getHost())
 				.setName(checkConfiguration.getName())
-				.setOutput(convertOutputConfigurationToOutput(checkConfiguration.getOutput()))
+				.setOutputAlternatives(getOutputAlternatives(checkConfiguration.getOutputAlternatives()))
 				.setPath(checkConfiguration.getPath())
 				.setPort(checkConfiguration.getPort())
 				.setReturnedMediaType(convertReturnTypeToReturnedMediaType(checkConfiguration.getReturnType()));
@@ -89,8 +94,21 @@ public class MonitoringConfigurationToCheckRequestGroupConverter {
 			OutputColumnConfiguration outputColumnConfiguration) {
 		return new OutputColumn().setAlign(Alignment.valueOf(outputColumnConfiguration.getAlign().name()))
 				.setContent(outputColumnConfiguration.getContent())
+				.setId(outputColumnConfiguration.getId())
 				.setName(outputColumnConfiguration.getName())
 				.setWidth(outputColumnConfiguration.getWidth());
+	}
+
+	private List<OutputAlternative> getOutputAlternatives(
+			List<OutputAlternativesConfiguration> outputAlternativConfigurations) {
+		return outputAlternativConfigurations.stream()
+				.map(outputAlternativConfiguration -> getOutputAlternative(outputAlternativConfiguration))
+				.collect(Collectors.toList());
+	}
+
+	private OutputAlternative getOutputAlternative(OutputAlternativesConfiguration outputAlternativConfiguration) {
+		return new OutputAlternative().setContent(outputAlternativConfiguration.getContent())
+				.setId(outputAlternativConfiguration.getId());
 	}
 
 }

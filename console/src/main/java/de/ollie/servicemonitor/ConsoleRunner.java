@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.json.JsonParseException;
@@ -17,6 +18,7 @@ import de.ollie.servicemonitor.model.CheckRequest;
 import de.ollie.servicemonitor.model.CheckRequestGroup;
 import de.ollie.servicemonitor.model.CheckResult;
 import de.ollie.servicemonitor.model.MonitorResult;
+import de.ollie.servicemonitor.model.OutputAlternative;
 import de.ollie.servicemonitor.model.OutputColumn;
 import de.ollie.servicemonitor.model.OutputColumn.Alignment;
 import de.ollie.servicemonitor.parameter.ApplicationArgumentsToCallParametersConverter;
@@ -81,10 +83,12 @@ public class ConsoleRunner {
 		if (!firstRunDone) {
 			firstRunDone = true;
 		} else {
-			try {
-				Thread.sleep(callParameters.getRepeatInSeconds() * 1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (callParameters.getRepeatInSeconds() != null) {
+				try {
+					Thread.sleep(callParameters.getRepeatInSeconds() * 1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return b;
@@ -102,7 +106,8 @@ public class ConsoleRunner {
 
 	private String createMessageForCheckResult(CheckResult checkResult) {
 		CheckRequest checkRequest = checkResult.getCheckRequest();
-		return checkRequest.getOutput()
+		return checkRequest.getGroup()
+				.getOutput()
 				.getColumns()
 				.stream()
 				.map(outputColumn -> convertOutputColumnToString(checkResult, outputColumn, checkRequest))
@@ -112,10 +117,21 @@ public class ConsoleRunner {
 
 	private String convertOutputColumnToString(CheckResult checkResult, OutputColumn outputColumn,
 			CheckRequest checkRequest) {
+		String content = findOutputAlternative(checkRequest, outputColumn.getId()).map(OutputAlternative::getContent)
+				.orElse(outputColumn.getContent());
 		String message = messageValueReplacer
-				.getMessageWithReplacesValues(outputColumn.getContent(), checkRequest, checkResult);
+				.getMessageWithReplacesValues(content, checkRequest, checkResult);
 		return String.format("%" + (outputColumn.getAlign() == Alignment.LEFT ? "-" : "")
 				+ (outputColumn.getWidth() > 0 ? outputColumn.getWidth() : "") + "s", message);
+	}
+
+	private Optional<OutputAlternative> findOutputAlternative(CheckRequest checkRequest, String id) {
+		return checkRequest.getOutputAlternatives() == null
+				? Optional.empty()
+				: checkRequest.getOutputAlternatives()
+				.stream()
+				.filter(outputAlternative -> outputAlternative.getId().equals(id))
+				.findFirst();
 	}
 
 }

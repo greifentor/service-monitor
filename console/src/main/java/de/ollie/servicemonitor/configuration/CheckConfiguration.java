@@ -1,5 +1,8 @@
 package de.ollie.servicemonitor.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -16,12 +19,13 @@ public class CheckConfiguration {
 		XML;
 	}
 
-	private OutputConfiguration output;
-	private String name;
-	private String host;
-	private Integer port;
-	private String path;
-	private ReturnType returnType;
+	private String authenticationBearer;
 	private String checkExpression;
+	private String host;
+	private String name;
+	private List<OutputAlternativesConfiguration> outputAlternatives = new ArrayList<>();
+	private String path;
+	private Integer port;
+	private ReturnType returnType;
 
 }
