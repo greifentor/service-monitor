@@ -148,6 +148,6 @@ This module contains the business logic to access web services and run check req
 Reads a configuration of check requests from a file, runs them by using the service component and prints the result
 through the console.
 
-#### Desktop
+#### Desktop (Future Feature)
 
 Same as the console does but having it in a more convenient (Swing) desktop application.
