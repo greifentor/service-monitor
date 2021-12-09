@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationArgumentsToCallParametersConverter {
 
 	public static final String FILE_OPTION_NAME = "file";
-	public static final String REPEAT_IN_SECONDS_OPTION_NAME = "repreatInSeconds";
+	public static final String REPEAT_IN_SECONDS_OPTION_NAME = "repeatInSeconds";
 
 	public CallParameters convert(ApplicationArguments args) {
 		ensure(args != null, "args cannot ne null.");

@@ -67,6 +67,12 @@ public class ConsoleRunner {
 
 	private void readCallParametersFromArgs(ApplicationArguments args) {
 		callParameters = applicationArgumentsToCallParametersConverter.convert(args);
+		out.println("\n> Configuration:");
+		out.println(String.format("> file:   %s", callParameters.getConfigurationFileNames()));
+		out.println(String.format("> repeat: %s",
+				callParameters.getRepeatInSeconds() != null
+						? "any " + callParameters.getRepeatInSeconds() + "s"
+						: "no"));
 	}
 
 	private void readMonitoringConfigurationFromYAMLFile()
