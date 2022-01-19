@@ -54,7 +54,6 @@ public class ConsoleRunner {
 			while (isCheckedForARun()) {
 				out.println("\n> run started at: " + LocalDateTime.now());
 				callMonitorServiceForCheckRequests();
-				printMonitorResultToConsole();
 				out.println("\n> run finished started at: " + LocalDateTime.now());
 			}
 		} catch (ConsoleRunnerException e) {
@@ -102,10 +101,11 @@ public class ConsoleRunner {
 
 	private void callMonitorServiceForCheckRequests() {
 		checkRequestGroups.forEach(
-				checkRequestGroup -> monitorResult = monitorService.monitor(checkRequestGroup.getCheckRequests()));
+				checkRequestGroup -> printMonitorResultToConsole(
+						monitorService.monitor(checkRequestGroup.getCheckRequests())));
 	}
 
-	private void printMonitorResultToConsole() {
+	private void printMonitorResultToConsole(MonitorResult monitorResult) {
 		out.println();
 		monitorResult.getCheckResults().forEach(checkResult -> out.println(createMessageForCheckResult(checkResult)));
 	}
