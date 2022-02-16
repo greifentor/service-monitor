@@ -1,0 +1,14 @@
+groups:
+- name: TEST-GROUP
+  output:
+    columns:
+    - name: name
+      id: NAME
+      width: 255
+      align: LEFT
+      content: "${status} --- ${name} --- URL: ${url}"
+  checks:
+  - name: Google
+    host: www.google.de
+    returnType: STRING
+    checkExpression: STRING READ_VALUE <title>Google</title> CONTAINS

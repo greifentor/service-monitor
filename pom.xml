@@ -27,6 +27,7 @@
 	<modules>
 		<module>console</module>
 		<module>service</module>
+		<module>swing</module>
 	</modules>
 
 	<dependencies>
