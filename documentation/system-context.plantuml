@@ -10,7 +10,7 @@ node WebServiceN
 interface "HTTP" as Interface1
 interface "HTTP" as InterfaceN
 
-User --> ServiceMonitor
+User --> ServiceMonitor :Console or GUI
 
 WebService1 -UP- Interface1
 WebServiceN -UP- InterfaceN

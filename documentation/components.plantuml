@@ -8,7 +8,7 @@ component service {
 	
 	component XMLToMapConverter
 	
-	MonitorService --> CheckService
+	MonitorService -UP-> CheckService
 
 }
 
@@ -23,6 +23,14 @@ component console {
 	ConsoleRunner --> ConfigurationReader
 	ConsoleRunner --> ConsolePrinter
 	ConsoleRunner -UP-> MonitorService
+
+}
+
+component swing {
+
+	component SwingRunner
+	
+	SwingRunner -UP-> MonitorService
 
 }
 

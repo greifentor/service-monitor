@@ -12,7 +12,7 @@
 
 	<groupId>de.ollie</groupId>
 	<artifactId>service-monitor</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6</version>
 	<packaging>pom</packaging>
 
 	<name>service-monitor</name>
@@ -27,6 +27,7 @@
 	<modules>
 		<module>console</module>
 		<module>service</module>
+		<module>swing</module>
 	</modules>
 
 	<dependencies>

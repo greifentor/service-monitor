@@ -11,10 +11,10 @@
 		<version>0.0.6</version>
 	</parent>
 
-	<artifactId>service-monitor-console</artifactId>
+	<artifactId>service-monitor-swing</artifactId>
 	<packaging>jar</packaging>
 
-	<name>service-monitor-console</name>
+	<name>service-monitor-swing</name>
 
 	<dependencies>
 		<dependency>
