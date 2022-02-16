@@ -4,6 +4,10 @@
 
 [service]
 
-[console] --> [service]
+[swing]
+
+[console] -UP-> [service]
+
+[swing] -UP-> [service]
 
 @enduml
