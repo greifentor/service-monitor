@@ -8,10 +8,7 @@ import javax.inject.Named;
 
 import org.springframework.boot.ApplicationArguments;
 
-import lombok.RequiredArgsConstructor;
-
 @Named
-@RequiredArgsConstructor
 public class ApplicationArgumentsToCallParametersConverter {
 
 	public static final String FILE_OPTION_NAME = "file";

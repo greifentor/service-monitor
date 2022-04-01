@@ -9,5 +9,6 @@
 [console] -UP-> [service]
 
 [swing] -UP-> [service]
+[swing] -UP-> [console]
 
 @enduml
