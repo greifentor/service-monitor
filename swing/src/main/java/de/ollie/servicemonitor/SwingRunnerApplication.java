@@ -21,6 +21,8 @@ public class SwingRunnerApplication {
 		        new SpringApplicationBuilder(SwingRunner.class).headless(false).run(args);
 		EventQueue.invokeLater(() -> {
 			SwingRunner ex = ctx.getBean(SwingRunner.class);
+			// TODO OLI: Think about passing the command line parameters here ... would be less effort in configuration
+			// ...
 			ex.setVisible(true);
 		});
 	}
