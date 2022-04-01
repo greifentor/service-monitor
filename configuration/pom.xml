@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -11,20 +12,15 @@
 		<version>0.0.8</version>
 	</parent>
 
-	<artifactId>service-monitor-swing</artifactId>
+	<artifactId>service-monitor-configuration</artifactId>
 	<packaging>jar</packaging>
 
-	<name>service-monitor-swing</name>
+	<name>service-monitor-configuration</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>de.ollie</groupId>
 			<artifactId>service-monitor-service</artifactId>
-			<version>0.0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>de.ollie</groupId>
-			<artifactId>service-monitor-configuration</artifactId>
 			<version>0.0.8</version>
 		</dependency>
 	</dependencies>
@@ -43,28 +39,6 @@
 				<configuration>
 					<skipTests>false</skipTests>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>com.coderplus.maven.plugins</groupId>
-				<artifactId>copy-rename-maven-plugin</artifactId>
-				<version>1.0</version>
-				<executions>
-					<execution>
-						<id>copy-file</id>
-						<phase>install</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<sourceFile>target/${project.name}-${project.version}.jar</sourceFile>
-							<destinationFile>target/${project.name}.jar</destinationFile>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

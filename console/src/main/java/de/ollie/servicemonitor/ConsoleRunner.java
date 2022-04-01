@@ -9,8 +9,6 @@ import java.util.Optional;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.json.JsonParseException;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import de.ollie.servicemonitor.configuration.MonitoringConfiguration;
 import de.ollie.servicemonitor.configuration.MonitoringConfigurationToCheckRequestGroupConverter;
 import de.ollie.servicemonitor.configuration.reader.YAMLConfigurationFileReader;
@@ -43,7 +41,6 @@ public class ConsoleRunner {
 	private CallParameters callParameters;
 	private List<CheckRequestGroup> checkRequestGroups;
 	private MonitoringConfiguration monitoringConfiguration;
-	private MonitorResult monitorResult;
 
 	public void run(ApplicationArguments args) {
 		out.println("\n\n> application started at: " + LocalDateTime.now());
@@ -75,7 +72,7 @@ public class ConsoleRunner {
 	}
 
 	private void readMonitoringConfigurationFromYAMLFile()
-			throws JsonMappingException, JsonParseException, IOException {
+			throws JsonParseException, IOException {
 		monitoringConfiguration = yamlConfigurationFileReader.read(callParameters.getConfigurationFileNames().get(0));
 	}
 
@@ -127,8 +124,15 @@ public class ConsoleRunner {
 				.orElse(outputColumn.getContent());
 		String message = messageValueReplacer
 				.getMessageWithReplacesValues(content, checkRequest, checkResult);
-		return String.format("%" + (outputColumn.getAlign() == Alignment.LEFT ? "-" : "")
-				+ (outputColumn.getWidth() > 0 ? outputColumn.getWidth() : "") + "s", message);
+		return String.format(getFormatString(outputColumn), message);
+	}
+
+	private String getFormatString(OutputColumn outputColumn) {
+		return "%" + (outputColumn.getAlign() == Alignment.LEFT ? "-" : "") + getOutputColumnWidth(outputColumn) + "s";
+	}
+
+	private String getOutputColumnWidth(OutputColumn outputColumn) {
+		return outputColumn.getWidth() > 0 ? "" + outputColumn.getWidth() : "";
 	}
 
 	private Optional<OutputAlternative> findOutputAlternative(CheckRequest checkRequest, String id) {

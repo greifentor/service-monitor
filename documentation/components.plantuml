@@ -12,11 +12,15 @@ component service {
 
 }
 
+component configuration {
+
+	component ConfigurationReader
+	
+}
+
 component console {
 
 	component ConsoleRunner
-	
-	component ConfigurationReader
 	
 	component ConsolePrinter
 	
@@ -31,7 +35,7 @@ component swing {
 	component SwingRunner
 	
 	SwingRunner -UP-> MonitorService
-	SwingRunner -UP-> ConfigurationReader
+	SwingRunner --> ConfigurationReader
 
 }
 

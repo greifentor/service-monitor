@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import de.ollie.servicemonitor.parameter.CallParameters;
+
 @Named
 public class SwingRunner extends JFrame implements ActionListener {
 
@@ -24,6 +26,7 @@ public class SwingRunner extends JFrame implements ActionListener {
 	static final int VGAP = 3;
 
 	private JButton buttonQuit;
+	private CallParameters callParameters;
 
 	public SwingRunner() {
 		setTitle("Service-Monitor");
@@ -53,6 +56,10 @@ public class SwingRunner extends JFrame implements ActionListener {
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT, HGAP, VGAP));
 		p.add(buttonQuit);
 		return p;
+	}
+
+	public void setCallParameters(CallParameters callParameters) {
+		this.callParameters = callParameters;
 	}
 
 	@Override
