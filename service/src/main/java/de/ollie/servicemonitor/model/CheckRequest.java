@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.Generated;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
@@ -12,6 +13,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 @Generated
+@ToString(exclude = { "group" })
 public class CheckRequest {
 
 	public static final String HTTP_PROTOCOL = "http://";
