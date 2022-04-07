@@ -170,6 +170,7 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 	public void actionPerformed(ActionEvent e) {
 		setVisible(false);
 		dispose();
+		System.exit(0);
 	}
 
 }
