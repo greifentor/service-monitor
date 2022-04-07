@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
@@ -76,6 +77,7 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 
 	private JPanel createDataPanel() {
 		JPanel p = new JPanel(new GridLayout(1, 1, HGAP, VGAP));
+		p.setBorder(new EmptyBorder(VGAP, HGAP, VGAP, HGAP));
 		jTreeStatusView = new JTree();
 		p.add(new JScrollPane(jTreeStatusView));
 		try {
