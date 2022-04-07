@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>de.ollie</groupId>
 		<artifactId>service-monitor</artifactId>
-		<version>0.0.9</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<artifactId>service-monitor-console</artifactId>
@@ -20,12 +20,12 @@
 		<dependency>
 			<groupId>de.ollie</groupId>
 			<artifactId>service-monitor-configuration</artifactId>
-			<version>0.0.9</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.ollie</groupId>
 			<artifactId>service-monitor-service</artifactId>
-			<version>0.0.9</version>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 

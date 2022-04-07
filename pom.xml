@@ -12,7 +12,7 @@
 
 	<groupId>de.ollie</groupId>
 	<artifactId>service-monitor</artifactId>
-	<version>0.0.9</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
 	<name>service-monitor</name>

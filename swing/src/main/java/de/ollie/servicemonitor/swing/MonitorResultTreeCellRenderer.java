@@ -1,7 +1,6 @@
 package de.ollie.servicemonitor.swing;
 
 import java.awt.Component;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -30,7 +29,13 @@ public class MonitorResultTreeCellRenderer implements TreeCellRenderer {
 		String color = "black";
 		String message = "-";
 		if (value instanceof MonitoringResultRootTreeNode) {
-			message = "" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy - hh:mm:ss"));
+			MonitoringResultRootTreeNode node = ((MonitoringResultRootTreeNode) value);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
+			message = "last run: " + node.getRunFrom().format(formatter)
+			        + " - "
+			        + node.getRunUntil().format(formatter)
+			        + "<br>next run: ~ "
+			        + node.getNextRun().format(formatter);
 		} else if (value instanceof MonitoringResultGroupTreeNode) {
 			MonitoringResultGroupTreeNode node = ((MonitoringResultGroupTreeNode) value);
 			message = node.getName();

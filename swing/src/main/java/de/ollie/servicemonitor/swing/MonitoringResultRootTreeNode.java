@@ -1,5 +1,6 @@
 package de.ollie.servicemonitor.swing;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -11,11 +12,12 @@ import javax.swing.tree.TreeNode;
 public class MonitoringResultRootTreeNode implements TreeNode {
 
 	private List<MonitoringResultGroupTreeNode> children = new ArrayList<>();
-	private String name;
+	private LocalDateTime nextRun;
+	private LocalDateTime runFrom;
+	private LocalDateTime runUntil;
 
-	public MonitoringResultRootTreeNode(String name) {
+	public MonitoringResultRootTreeNode() {
 		super();
-		this.name = name;
 	}
 
 	public void addNode(MonitoringResultGroupTreeNode node) {
@@ -27,8 +29,28 @@ public class MonitoringResultRootTreeNode implements TreeNode {
 		return children.stream().collect(Collectors.toList());
 	}
 
-	public String getName() {
-		return name;
+	public LocalDateTime getNextRun() {
+		return nextRun;
+	}
+
+	public LocalDateTime getRunFrom() {
+		return runFrom;
+	}
+
+	public LocalDateTime getRunUntil() {
+		return runUntil;
+	}
+
+	public void setNextRun(LocalDateTime nextRun) {
+		this.nextRun = nextRun;
+	}
+
+	public void setRunFrom(LocalDateTime runFrom) {
+		this.runFrom = runFrom;
+	}
+
+	public void setRunUntil(LocalDateTime runUntil) {
+		this.runUntil = runUntil;
 	}
 
 	@Override

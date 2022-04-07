@@ -44,6 +44,7 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 	static final int VGAP = 3;
 
 	private final MessageValueReplacer messageValueReplacer;
+	private final MonitorConfiguration configuration;
 	private final MonitorService monitorService;
 	private final MonitoringConfigurationToCheckRequestGroupConverter monitoringConfigurationToCheckRequestGroupConverter;
 	private final YAMLConfigurationFileReader yamlConfigurationFileReader;
@@ -56,14 +57,16 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 	private JTree jTreeStatusView;
 	private CallParameters callParameters;
 
-	public SwingRunner(MessageValueReplacer messageValueReplacer, MonitorService monitorService,
+	public SwingRunner(MessageValueReplacer messageValueReplacer, MonitorConfiguration configuration,
+	        MonitorService monitorService,
 	        MonitoringConfigurationToCheckRequestGroupConverter monitoringConfigurationToCheckRequestGroupConverter,
 	        YAMLConfigurationFileReader yamlConfigurationFileReader) {
+		this.configuration = configuration;
 		this.messageValueReplacer = messageValueReplacer;
 		this.monitorService = monitorService;
 		this.monitoringConfigurationToCheckRequestGroupConverter = monitoringConfigurationToCheckRequestGroupConverter;
 		this.yamlConfigurationFileReader = yamlConfigurationFileReader;
-		setTitle("Service-Monitor");
+		setTitle("Service-Monitor (" + configuration.getVersion() + ")");
 	}
 
 	public void buildComponents() {
@@ -142,7 +145,8 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 	}
 
 	private TreeModel createTreeModelFromMonitoringResults() {
-		MonitoringResultRootTreeNode root = new MonitoringResultRootTreeNode("Results");
+		MonitoringResultRootTreeNode root = new MonitoringResultRootTreeNode();
+		root.setRunFrom(LocalDateTime.now());
 		checkRequestGroups.forEach(checkRequestGroup -> {
 			MonitorResult result = monitorService.monitor(checkRequestGroup.getCheckRequests());
 			MonitoringResultGroupTreeNode node = new MonitoringResultGroupTreeNode(checkRequestGroup.getName());
@@ -151,6 +155,8 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 			        .getCheckResults()
 			        .forEach(checkResult -> node.addNode(new SingleMonitoringResultTreeNode(checkResult)));
 		});
+		root.setRunUntil(LocalDateTime.now());
+		root.setNextRun(LocalDateTime.now().plusSeconds(callParameters.getRepeatInSeconds()));
 		return new DefaultTreeModel(root);
 	}
 
