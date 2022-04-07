@@ -2,6 +2,7 @@ package de.ollie.servicemonitor.swing;
 
 import java.awt.Component;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import javax.swing.JLabel;
@@ -29,7 +30,7 @@ public class MonitorResultTreeCellRenderer implements TreeCellRenderer {
 		String color = "black";
 		String message = "-";
 		if (value instanceof MonitoringResultRootTreeNode) {
-			message = "" + LocalDateTime.now();
+			message = "" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy - hh:mm:ss"));
 		} else if (value instanceof MonitoringResultGroupTreeNode) {
 			MonitoringResultGroupTreeNode node = ((MonitoringResultGroupTreeNode) value);
 			message = node.getName();
