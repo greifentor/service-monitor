@@ -22,6 +22,12 @@ The application can be started with
 and executes the example configuration file with a call to www.google.de.
 
 
+## Goals
+
+Having a simple to configure service monitor on one side, but having also a running application on the other side. So, 
+the code is not in the best shape everywhere but will be refactored in the future ...
+
+
 ## Open Tasks
 
 * Create test coverage for class Inifile.
