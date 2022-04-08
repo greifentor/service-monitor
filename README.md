@@ -22,6 +22,13 @@ The application can be started with
 and executes the example configuration file with a call to www.google.de.
 
 
+## Open Tasks
+
+* Create test coverage for class Inifile.
+* Refactor class Inifile and InifileMode.
+* Replace System.out.println's by Logger calls (except those for console output ;)).
+
+
 ### Program Parameters
 
 #### file
