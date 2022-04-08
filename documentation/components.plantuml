@@ -24,8 +24,8 @@ component console {
 	
 	component ConsolePrinter
 	
-	ConsoleRunner --> ConfigurationReader
-	ConsoleRunner --> ConsolePrinter
+	ConsoleRunner -UP-> ConfigurationReader
+	ConsoleRunner -UP-> ConsolePrinter
 	ConsoleRunner -UP-> MonitorService
 
 }
@@ -35,7 +35,7 @@ component swing {
 	component SwingRunner
 	
 	SwingRunner -UP-> MonitorService
-	SwingRunner --> ConfigurationReader
+	SwingRunner -UP-> ConfigurationReader
 
 }
 

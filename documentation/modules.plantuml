@@ -12,6 +12,6 @@
 [console] -UP-> [configuration]
 
 [swing] -UP-> [service]
-[swing] --> [configuration]
+[swing] -UP-> [configuration]
 
 @enduml
