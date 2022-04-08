@@ -2,12 +2,12 @@ package de.ollie.servicemonitor;
 
 import java.awt.EventQueue;
 
+import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-import de.ollie.servicemonitor.swing.SwingRunner;
+import de.ollie.servicemonitor.parameter.ApplicationArgumentsToCallParametersConverter;
 
 /**
  * @author ollie (16.02.2022)
@@ -17,11 +17,15 @@ import de.ollie.servicemonitor.swing.SwingRunner;
 public class SwingRunnerApplication {
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext ctx =
-		        new SpringApplicationBuilder(SwingRunner.class).headless(false).run(args);
+		var ctx = new SpringApplicationBuilder(SwingRunnerApplication.class).headless(false).run(args);
 		EventQueue.invokeLater(() -> {
-			SwingRunner ex = ctx.getBean(SwingRunner.class);
-			ex.setVisible(true);
+			var ex0 = ctx.getBean(SwingRunner.class);
+			ex0
+			        .setCallParameters(
+			                new ApplicationArgumentsToCallParametersConverter()
+			                        .convert(new DefaultApplicationArguments(args)));
+			ex0.buildComponents();
+			ex0.setVisible(true);
 		});
 	}
 

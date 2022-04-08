@@ -12,16 +12,20 @@ component service {
 
 }
 
+component configuration {
+
+	component ConfigurationReader
+	
+}
+
 component console {
 
 	component ConsoleRunner
 	
-	component ConfigurationReader
-	
 	component ConsolePrinter
 	
-	ConsoleRunner --> ConfigurationReader
-	ConsoleRunner --> ConsolePrinter
+	ConsoleRunner -UP-> ConfigurationReader
+	ConsoleRunner -UP-> ConsolePrinter
 	ConsoleRunner -UP-> MonitorService
 
 }

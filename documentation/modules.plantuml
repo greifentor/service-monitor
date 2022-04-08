@@ -1,5 +1,7 @@
 @startuml
 
+[configuration]
+
 [console]
 
 [service]
@@ -7,8 +9,9 @@
 [swing]
 
 [console] -UP-> [service]
+[console] -UP-> [configuration]
 
 [swing] -UP-> [service]
-[swing] -UP-> [console]
+[swing] -UP-> [configuration]
 
 @enduml

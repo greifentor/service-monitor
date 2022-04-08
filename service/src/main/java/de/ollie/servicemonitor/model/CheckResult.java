@@ -19,6 +19,10 @@ public class CheckResult {
 		WARN,
 		FAIL,
 		ERROR;
+
+		public Status max(Status st) {
+			return this.ordinal() > st.ordinal() ? this : st;
+		}
 	}
 
 	private CheckRequestGroup group;

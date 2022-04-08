@@ -11,7 +11,12 @@ public class IllegalValueException extends ConsoleRunnerException {
 
 	public IllegalValueException(String parameterName, Object valueContent,
 			String expectedValueBounds) {
-		super("value '" + valueContent + "' for parameter '" + parameterName + "' is out of range: 0..Long.MAX_VALUE");
+		super(
+		        "value '" + valueContent
+		                + "' for parameter '"
+		                + parameterName
+		                + "' is out of range: "
+		                + expectedValueBounds);
 		this.expectedValueBounds = expectedValueBounds;
 		this.parameterName = parameterName;
 		this.valueContent = valueContent;

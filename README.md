@@ -22,6 +22,19 @@ The application can be started with
 and executes the example configuration file with a call to www.google.de.
 
 
+## Goals
+
+Having a simple to configure service monitor on one side, but having also a running application on the other side. So, 
+the code is not in the best shape everywhere but will be refactored in the future ...
+
+
+## Open Tasks
+
+* Create test coverage for class Inifile.
+* Refactor class Inifile and InifileMode.
+* Replace System.out.println's by Logger calls (except those for console output ;)).
+
+
 ### Program Parameters
 
 #### file
@@ -33,6 +46,18 @@ Example:
 `--file=console/src/main/resources/example-configuration.yml`
 
 Starts the application and runs the checks defined in the file `console/src/main/resources/example-configuration.yml`.
+
+#### fontSize
+
+(Optional) While using the Swing GUI there is the option to set a font size for the output. This should have a value 
+between 1 and 9.
+
+Example:
+
+`--fontSize=5`
+
+Willset the font size a little bit higher than the standard of 4.
+
 
 #### repeatInSeconds
 
@@ -109,13 +134,13 @@ fields of the columns are:
 Each column can contain a string with the pattern for the columns output. This string can contain place holders as
 described below:
 
-| Place Holder Id | Description                                        |
-| --------------- | -------------------------------------------------- |
-| name            | The name of the check request.                     |
-| status          | The status of the check result (OK, FAIL or ERROR. |
-| url             | The called url.                                    |
+| Place Holder Id | Description                                         |
+| --------------- | --------------------------------------------------- |
+| name            | The name of the check request.                      |
+| status          | The status of the check result (OK, FAIL or ERROR). |
+| url             | The called url.                                     |
 
-This place holder are to access by having a `${PLACE_HOLDER_ID}` in the content string. Additionally it is possbile to 
+This place holder are to access by having a `${PLACE_HOLDER_ID}` in the content string. Additionally it is possible to 
 have field of the response of the call in this string. This can be addressed by `$F{PATH}`. This is working with XML 
 and JSON returns only. For example: `$F{status.value}` for returned JSON
 
@@ -128,6 +153,19 @@ and JSON returns only. For example: `$F{status.value}` for returned JSON
 ```
 
 would return "OK".
+
+
+#### Expressions
+
+The configuration field "checkExpression" could contain an expression which is processed with the return of the call.
+This expressions have an UPN syntax and allowing operations as listed below:
+
+| operator        | Parameters      | Description                                         |
+| --------------- | --------------- | --------------------------------------------------- |
+| CONTAINS        | str0, str1      | Checks if str0 contains str1 and returns the result to the stack. |
+| EQUALS          | v0, v1          | Checks if v0 is equal to v1 and returns the result to the stack. |
+| READ_VALUE      | path            | Puts the value found under the passed path to the stack. Path elements are comma separated (e. g. "status.message"). |
+| STRING          | -               | Puts the whole result on the stack, in case of having a STRING return type. It's not really an operator but a constant. |
 
 
 #### Example File
@@ -148,6 +186,7 @@ This module contains the business logic to access web services and run check req
 Reads a configuration of check requests from a file, runs them by using the service component and prints the result
 through the console.
 
-#### Desktop (Future Feature)
+#### Swing GUI
 
-Same as the console does but having it in a more convenient (Swing) desktop application.
+Reads a configuration of check requests from a file, runs them by using the service component and show the result
+in a Swing GUI on the desktop.

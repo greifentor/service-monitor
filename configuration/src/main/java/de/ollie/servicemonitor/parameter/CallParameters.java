@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 public class CallParameters {
 
 	private List<String> configurationFileNames;
+	private int fontSize = 4;
 	private Long repeatInSeconds;
 
 }
