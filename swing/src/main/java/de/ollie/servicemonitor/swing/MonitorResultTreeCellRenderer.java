@@ -31,10 +31,10 @@ public class MonitorResultTreeCellRenderer implements TreeCellRenderer {
 		if (value instanceof MonitoringResultRootTreeNode) {
 			MonitoringResultRootTreeNode node = ((MonitoringResultRootTreeNode) value);
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy - HH:mm:ss");
-			message = "last run: " + node.getRunFrom().format(formatter)
+			message = "Last Run: &nbsp;&nbsp;" + node.getRunFrom().format(formatter)
 			        + " - "
 			        + node.getRunUntil().format(formatter)
-			        + "<br>next run: ~ "
+			        + "<br>Next Run: ~ "
 			        + node.getNextRun().format(formatter);
 		} else if (value instanceof MonitoringResultGroupTreeNode) {
 			MonitoringResultGroupTreeNode node = ((MonitoringResultGroupTreeNode) value);
