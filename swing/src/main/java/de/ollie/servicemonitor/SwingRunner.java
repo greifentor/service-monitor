@@ -15,6 +15,7 @@ import java.util.List;
 import javax.inject.Named;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -62,15 +63,16 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 	private List<CheckRequestGroup> checkRequestGroups;
 	private MonitoringConfiguration monitoringConfiguration;
 
+	private JButton buttonRefresh;
 	private JButton buttonQuit;
 	private JTree jTreeStatusView;
 	private CallParameters callParameters;
 	private Inifile inifile = new Inifile(System.getProperty("user.home") + "/.service-monitor.ini");
 
 	public SwingRunner(MessageValueReplacer messageValueReplacer, MonitorConfiguration configuration,
-	        MonitorService monitorService,
-	        MonitoringConfigurationToCheckRequestGroupConverter monitoringConfigurationToCheckRequestGroupConverter,
-	        YAMLConfigurationFileReader yamlConfigurationFileReader) {
+			MonitorService monitorService,
+			MonitoringConfigurationToCheckRequestGroupConverter monitoringConfigurationToCheckRequestGroupConverter,
+			YAMLConfigurationFileReader yamlConfigurationFileReader) {
 		this.configuration = configuration;
 		this.messageValueReplacer = messageValueReplacer;
 		this.monitorService = monitorService;
@@ -94,11 +96,11 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 		setContentPane(panelMain);
 		pack();
 		setBounds(
-		        new Rectangle(
-		                inifile.readInt(GROUP, X, 0),
-		                inifile.readInt(GROUP, Y, 0),
-		                inifile.readInt(GROUP, WIDTH, 640),
-		                inifile.readInt(GROUP, HEIGHT, 480)));
+				new Rectangle(
+						inifile.readInt(GROUP, X, 0),
+						inifile.readInt(GROUP, Y, 0),
+						inifile.readInt(GROUP, WIDTH, 640),
+						inifile.readInt(GROUP, HEIGHT, 480)));
 		new Thread(this).start();
 	}
 
@@ -114,7 +116,7 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 			e.printStackTrace();
 		}
 		jTreeStatusView
-		        .setCellRenderer(new MonitorResultTreeCellRenderer(callParameters.getFontSize(), messageValueReplacer));
+				.setCellRenderer(new MonitorResultTreeCellRenderer(callParameters.getFontSize(), messageValueReplacer));
 		return p;
 	}
 
@@ -145,9 +147,9 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 			if (callParameters.getRepeatInSeconds() != null) {
 				try {
 					System.out
-					        .println(
-					                "waiting for next run at: "
-					                        + LocalDateTime.now().plusSeconds(callParameters.getRepeatInSeconds()));
+							.println(
+									"waiting for next run at: "
+											+ LocalDateTime.now().plusSeconds(callParameters.getRepeatInSeconds()));
 					Thread.sleep(callParameters.getRepeatInSeconds() * 1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -176,8 +178,8 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 			MonitoringResultGroupTreeNode node = new MonitoringResultGroupTreeNode(checkRequestGroup.getName());
 			root.addNode(node);
 			result
-			        .getCheckResults()
-			        .forEach(checkResult -> node.addNode(new SingleMonitoringResultTreeNode(checkResult)));
+					.getCheckResults()
+					.forEach(checkResult -> node.addNode(new SingleMonitoringResultTreeNode(checkResult)));
 		});
 		root.setRunUntil(LocalDateTime.now());
 		root.setNextRun(LocalDateTime.now().plusSeconds(callParameters.getRepeatInSeconds()));
@@ -189,7 +191,13 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 		buttonQuit.addActionListener(this);
 		Font font = buttonQuit.getFont();
 		buttonQuit.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE_BUTTONS));
+		buttonRefresh = new JButton("Refresh");
+		buttonRefresh.addActionListener(this);
+		font = buttonRefresh.getFont();
+		buttonRefresh.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE_BUTTONS));
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.RIGHT, HGAP, VGAP));
+		p.add(buttonRefresh);
+		p.add(new JLabel("        "));
 		p.add(buttonQuit);
 		return p;
 	}
@@ -200,19 +208,23 @@ public class SwingRunner extends JFrame implements ActionListener, Runnable {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		try {
-			inifile.writeInt(GROUP, X, getX());
-			inifile.writeInt(GROUP, Y, getY());
-			inifile.writeInt(GROUP, WIDTH, getWidth());
-			inifile.writeInt(GROUP, HEIGHT, getHeight());
-			inifile.save();
-			System.out.println("wrote inifile to: " + inifile.getFilename());
-		} catch (Exception ex) {
-			System.out.println("something went wrong writing the inifile: " + ex.getMessage());
+		if (e.getSource() == buttonRefresh) {
+			callMonitorServiceForCheckRequests();
+		} else if (e.getSource() == buttonQuit) {
+			try {
+				inifile.writeInt(GROUP, X, getX());
+				inifile.writeInt(GROUP, Y, getY());
+				inifile.writeInt(GROUP, WIDTH, getWidth());
+				inifile.writeInt(GROUP, HEIGHT, getHeight());
+				inifile.save();
+				System.out.println("wrote inifile to: " + inifile.getFilename());
+			} catch (Exception ex) {
+				System.out.println("something went wrong writing the inifile: " + ex.getMessage());
+			}
+			setVisible(false);
+			dispose();
+			System.exit(0);
 		}
-		setVisible(false);
-		dispose();
-		System.exit(0);
 	}
 
 }
