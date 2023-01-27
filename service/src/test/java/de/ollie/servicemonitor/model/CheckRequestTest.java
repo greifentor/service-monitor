@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 public class CheckRequestTest {
 
 	private static final String HTTP = CheckRequest.HTTP_PROTOCOL;
+	private static final String HTTPS = CheckRequest.HTTPS_PROTOCOL;
 
 	private static final String HOST = "host";
 	private static final String PATH = "path";
@@ -62,6 +63,14 @@ public class CheckRequestTest {
 			CheckRequest checkRequest = new CheckRequest().setHost(HOST).setPath("/" + PATH).setPort(PORT);
 			// Run & Check
 			assertEquals(HTTP + HOST + ":" + PORT + "/" + PATH, checkRequest.getUrl());
+		}
+
+		@Test
+		void checkRequestWithAHostNamePortPathAndTheHttpsFlagSet_returnsACorrectHttpsUrl() {
+			// Prepare
+			CheckRequest checkRequest = new CheckRequest().setHost(HOST).setHttps(true).setPath(PATH).setPort(PORT);
+			// Run & Check
+			assertEquals(HTTPS + HOST + ":" + PORT + "/" + PATH, checkRequest.getUrl());
 		}
 
 	}

@@ -55,6 +55,7 @@ public class MonitoringConfigurationToCheckRequestGroupConverter {
 				.setCheckExpression(checkConfiguration.getCheckExpression())
 				.setGroup(group)
 				.setHost(checkConfiguration.getHost())
+				.setHttps(checkConfiguration.isHttps())
 				.setName(checkConfiguration.getName())
 				.setOutputAlternatives(getOutputAlternatives(checkConfiguration.getOutputAlternatives()))
 				.setPath(checkConfiguration.getPath())

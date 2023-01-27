@@ -22,6 +22,7 @@ public class CheckConfiguration {
 	private String authenticationBearer;
 	private String checkExpression;
 	private String host;
+	private boolean https;
 	private String name;
 	private List<OutputAlternativesConfiguration> outputAlternatives = new ArrayList<>();
 	private String path;
