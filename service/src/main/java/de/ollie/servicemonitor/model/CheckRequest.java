@@ -17,6 +17,7 @@ import lombok.experimental.Accessors;
 public class CheckRequest {
 
 	public static final String HTTP_PROTOCOL = "http://";
+	public static final String HTTPS_PROTOCOL = "https://";
 
 	public enum ReturnedMediaType {
 		JSON,
@@ -28,6 +29,7 @@ public class CheckRequest {
 	private String checkExpression;
 	private CheckRequestGroup group;
 	private String host;
+	private boolean https;
 	private String name;
 	private List<OutputAlternative> outputAlternatives;
 	private String path;
@@ -35,7 +37,7 @@ public class CheckRequest {
 	private ReturnedMediaType returnedMediaType;
 
 	public String getUrl() {
-		return HTTP_PROTOCOL + host + getPortStr() + getPathStr();
+		return (isHttps() ? HTTPS_PROTOCOL : HTTP_PROTOCOL) + host + getPortStr() + getPathStr();
 	}
 
 	private String getPortStr() {

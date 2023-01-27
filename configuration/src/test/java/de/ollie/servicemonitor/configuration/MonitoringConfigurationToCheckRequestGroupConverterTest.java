@@ -206,6 +206,7 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			assertEquals(CHECK_NAME_0, checkRequest.getName());
 			assertEquals(ReturnedMediaType.STRING, checkRequest.getReturnedMediaType());
 			assertEquals(HOST_0, checkRequest.getHost());
+			assertFalse(checkRequest.isHttps());
 			assertEquals(PATH_0, checkRequest.getPath());
 			assertEquals(PORT_0, checkRequest.getPort());
 			checkRequest = group.getCheckRequests().get(1);
@@ -213,8 +214,38 @@ class MonitoringConfigurationToCheckRequestGroupConverterTest {
 			assertEquals(CHECK_NAME_1, checkRequest.getName());
 			assertEquals(ReturnedMediaType.JSON, checkRequest.getReturnedMediaType());
 			assertEquals(HOST_1, checkRequest.getHost());
+			assertFalse(checkRequest.isHttps());
 			assertEquals(PATH_1, checkRequest.getPath());
 			assertEquals(PORT_1, checkRequest.getPort());
+		}
+
+		@Test
+		void passAMonitorConfigurationWithAFullyLoadedGroupConfigurationsWithAnHttpsCheck_returnsAListWithACorrectCheckRequestGroup() {
+			// Prepare
+			MonitoringConfiguration monitoringConfiguration =
+					new MonitoringConfiguration()
+							.setGroups(
+									List
+											.of(
+													new GroupConfiguration()
+															.setChecks(
+																	List
+																			.of(
+																					new CheckConfiguration()
+																							.setCheckExpression(
+																									CHECK_EXPRESSION_0)
+																							.setName(CHECK_NAME_0)
+																							.setReturnType(
+																									RETURN_TYPE_0)
+																							.setHost(HOST_0)
+																							.setHttps(true)
+																							.setPath(PATH_0)
+																							.setPort(PORT_0)))
+															.setName(GROUP_NAME_0)));
+			// Run
+			List<CheckRequestGroup> returned = unitUnderTest.convert(monitoringConfiguration);
+			// Check
+			assertTrue(returned.get(0).getCheckRequests().get(0).isHttps());
 		}
 
 	}
