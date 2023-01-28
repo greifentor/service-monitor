@@ -113,6 +113,7 @@ These data contain the configuration of a particular check.
 | authenticationBearer | (optional) An authentication token (without "Bearer" key word) if necessary for URL access. |
 | checkExpression      | The expression to check the return (see below).              |
 | host                 | The name of the host which is to check.                      |
+| https                | (optional) Switch to HTTPS protocol (true | false).          ||
 | name                 | The name of the check.                                       |
 | outputAlternatives   | (optional) The output alternative configuration (see below). |
 | path                 | (optional) A path as extension for the host.                 |
